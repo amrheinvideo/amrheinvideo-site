@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="av.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amrhein Video - Freelance YouTube Editor for Gaming and Tech</title>
@@ -62,8 +61,7 @@
       pointer-events: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
       background-size: 200px 200px;
-      opacity: 0.035;
-      mix-blend-mode: overlay;
+      opacity: 0.04;
     }
 
     img, video, iframe { max-width: 100%; display: block; }
@@ -71,6 +69,7 @@
     button { font-family: var(--font); border: none; background: none; }
 
     ::selection { background: var(--accent); color: #fff; }
+
 
     /* ===== TYPE / MOTIF ===== */
     .violet-italic {
@@ -280,16 +279,18 @@
       top: -120px; left: -140px;
       background: radial-gradient(circle, rgba(128, 0, 255, 0.32), transparent 70%);
       animation: breathe 6s ease-in-out infinite alternate;
+      will-change: opacity;
     }
     .hero-glow-2 {
       width: 520px; height: 520px;
       top: 30%; right: -160px;
       background: radial-gradient(circle, rgba(128, 0, 255, 0.18), transparent 70%);
       animation: breathe 7s ease-in-out infinite alternate-reverse;
+      will-change: opacity;
     }
     @keyframes breathe {
-      from { opacity: 0.6; transform: scale(0.95); }
-      to   { opacity: 1; transform: scale(1.08); }
+      from { opacity: 0.55; }
+      to   { opacity: 1; }
     }
 
     .hero-grid {
@@ -471,6 +472,7 @@
       display: flex;
       width: max-content;
       animation: scroll-x 60s linear infinite;
+      will-change: transform;
     }
     .marquee-group {
       display: flex;
@@ -1045,7 +1047,7 @@
                the small text under it is "hero-stat-label". Keep it to 4 stats so they fit in a row. -->
           <div class="hero-stats reveal">
             <div class="hero-stat">
-              <div class="hero-stat-num">150k+</div>
+              <div class="hero-stat-num">167k+</div>
               <div class="hero-stat-label">Subscribers reached</div>
             </div>
             <div class="hero-stat">
@@ -1536,15 +1538,22 @@
 
       var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      /* ---- Sticky nav ---- */
+      /* ---- Sticky nav (IntersectionObserver: no per-scroll layout reads) ---- */
       var nav = document.getElementById('nav');
       var hero = document.getElementById('hero');
-      function updateNav() {
-        if (!nav || !hero) return;
-        nav.classList.toggle('scrolled', hero.getBoundingClientRect().bottom < 80);
+      if (nav && hero) {
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(function (entries) {
+            nav.classList.toggle('scrolled', !entries[0].isIntersecting);
+          }, { rootMargin: '-80px 0px 0px 0px', threshold: 0 }).observe(hero);
+        } else {
+          var updateNav = function () {
+            nav.classList.toggle('scrolled', hero.getBoundingClientRect().bottom < 80);
+          };
+          window.addEventListener('scroll', updateNav, { passive: true });
+          updateNav();
+        }
       }
-      window.addEventListener('scroll', updateNav, { passive: true });
-      updateNav();
 
       /* ---- Hamburger ---- */
       var hamburger = document.querySelector('.nav-hamburger');
