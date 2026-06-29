@@ -3,13 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <link rel="canonical" href="https://amrheinvideo.com/">
   <link rel="icon" type="image/png" href="av.png">
-  <title>Amrhein Video - Freelance YouTube Editor for Gaming and Tech</title>
+  <link rel="apple-touch-icon" href="av.png">
+  <title>Amrhein Video</title>
   <meta name="description" content="Amrhein Video is Jonathan's freelance video editing service for YouTube creators. Specializing in gaming and tech content - let's plays, reviews, discussions, live stream cuts, and hardware.">
-  <meta property="og:title" content="Amrhein Video - Freelance YouTube Editor">
+  <meta property="og:title" content="Amrhein Video">
   <meta property="og:description" content="Freelance YouTube video editing for gaming and tech creators. Let's make something together.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://amrheinvideo.com/og-image.jpg">
+  <meta property="og:url" content="https://amrheinvideo.com/">
+  <meta property="og:image" content="https://amrheinvideo.com/social-share.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Amrhein Video">
+  <meta name="twitter:description" content="Freelance YouTube video editing for gaming and tech creators. Let's make something together.">
+  <meta name="twitter:image" content="https://amrheinvideo.com/social-share.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://i.ytimg.com">
@@ -162,8 +170,9 @@
       letter-spacing: -0.01em;
       white-space: nowrap;
     }
-    .nav-logo svg { height: 1.25em; width: auto; flex-shrink: 0; transition: filter 0.25s; }
-    .nav-logo:hover svg, .nav-logo:focus-visible svg { filter: drop-shadow(0 0 7px rgba(128, 0, 255, 0.8)); }
+    .nav-logo svg, .nav-logo-img { height: 1.5em; width: auto; flex-shrink: 0; transition: filter 0.25s; }
+    .nav-logo:hover svg, .nav-logo:focus-visible svg,
+    .nav-logo:hover .nav-logo-img, .nav-logo:focus-visible .nav-logo-img { filter: drop-shadow(0 0 7px rgba(128, 0, 255, 0.8)); }
     .nav-logo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
 
     .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
@@ -364,7 +373,7 @@
       align-items: stretch;
       text-align: center;
     }
-    .hero-stat { flex: 1 1 0; min-width: 0; padding: 0 1.25rem; display: flex; flex-direction: column; justify-content: flex-start; }
+    .hero-stat { flex: 0 0 auto; min-width: 0; padding: 0 2rem; display: flex; flex-direction: column; justify-content: flex-start; }
     .hero-stat-num {
       font-family: var(--font-display);
       font-size: 1.7rem;
@@ -679,9 +688,15 @@
     /* ===== TESTIMONIALS ===== */
     .testi-quotes {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      align-items: stretch;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    /* The smaller supporting quote(s) sit in the narrower right column and stack. */
+    .testi-small {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
     .featured-quote {
       background: var(--card);
@@ -690,6 +705,8 @@
       border-radius: 22px;
       padding: 2.75rem 2.5rem;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
     .quote-mark {
       font-family: Georgia, 'Times New Roman', serif;
@@ -701,9 +718,21 @@
       margin-bottom: 0.5rem;
     }
     .featured-quote blockquote { font-size: 1.2rem; line-height: 1.65; font-weight: 400; margin-bottom: 1.5rem; }
-    .quote-attr { display: flex; align-items: center; gap: 0.7rem; font-size: 0.9rem; color: var(--text-muted); }
+    .quote-attr { display: flex; align-items: center; gap: 0.7rem; font-size: 0.9rem; color: var(--text-muted); margin-top: auto; }
     .quote-attr strong { color: var(--text); font-weight: 600; }
     .quote-attr .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+    /* Channel logo beside a testimonial name */
+    .quote-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+    }
+    .quote-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mini-quote .quote-avatar { width: 32px; height: 32px; }
 
     .mini-quote {
       background: var(--card);
@@ -711,9 +740,11 @@
       border-left: 2px solid var(--accent);
       border-radius: 12px;
       padding: 1.3rem 1.4rem;
+      display: flex;
+      flex-direction: column;
     }
     .mini-quote blockquote { font-size: 1rem; line-height: 1.55; color: var(--text); margin-bottom: 0.8rem; }
-    .mini-quote figcaption { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); }
+    .mini-quote figcaption { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
     .mini-quote figcaption strong { color: var(--text); font-weight: 600; }
     .mini-quote .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
@@ -721,7 +752,7 @@
     .roster {
       margin-top: 3rem;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
       gap: 1rem;
     }
     .roster-card {
@@ -770,7 +801,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .roster-subs { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; }
+    .roster-subs { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; white-space: nowrap; }
     .roster-arrow { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-dim); transition: color 0.2s, transform 0.2s; }
     .roster-card:hover .roster-arrow { color: var(--accent); transform: translate(2px, -2px); }
 
@@ -883,7 +914,7 @@
     footer { background: var(--bg); border-top: 1px solid var(--border); padding: 2.5rem 0; }
     .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
     .footer-logo { display: flex; align-items: center; gap: 0.55rem; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; }
-    .footer-logo svg { height: 1.2em; width: auto; }
+    .footer-logo svg, .footer-logo-img { height: 1.4em; width: auto; }
     .footer-copy { font-size: 0.8rem; color: var(--text-dim); }
 
     /* ===== REVEAL ===== */
@@ -992,10 +1023,7 @@
   <nav id="nav" role="navigation" aria-label="Main navigation">
     <div class="nav-inner">
       <a href="#hero" class="nav-logo" aria-label="Amrhein Video - back to top">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 54" fill="none" aria-hidden="true" focusable="false">
-          <polygon points="14,2 26,27 14,52 2,27" stroke="#8000FF" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
-          <polygon points="14,16 20,27 14,38 8,27" stroke="#8000FF" stroke-width="1.8" fill="#000000" stroke-linejoin="round"/>
-        </svg>
+        <img src="av.png" alt="" class="nav-logo-img">
         Amrhein Video
       </a>
 
@@ -1047,14 +1075,6 @@
           <!-- >>> EDIT HERO STATS: each block is one stat. The big text is "hero-stat-num",
                the small text under it is "hero-stat-label". Keep it to 4 stats so they fit in a row. -->
           <div class="hero-stats reveal">
-            <div class="hero-stat">
-              <div class="hero-stat-num">150k+</div>
-              <div class="hero-stat-label">Subscribers reached</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-num">250k+</div>
-              <div class="hero-stat-label">Views generated</div>
-            </div>
             <div class="hero-stat">
               <div class="hero-stat-num">Unlimited</div>
               <div class="hero-stat-label">Revisions</div>
@@ -1148,18 +1168,18 @@
       <div class="services-grid stagger">
         <div class="service-card wide">
           <div class="service-num">01</div>
-          <h3>Let's plays</h3>
-          <p>Tight, watchable playthroughs that keep viewers around from the cold open to the outro, with the dead air cut out and the best moments pushed forward.</p>
+          <h3>Reviews</h3>
+          <p>A good review walks viewers through the verdict: what works, what does not, and whether it is worth their money. I cut it so your points land in a clear order, the footage backs up every claim, and people stick around for your final recommendation.</p>
         </div>
         <div class="service-card">
           <div class="service-num">02</div>
-          <h3>Reviews</h3>
-          <p>Clean, structured edits that let your takes land clearly and hold attention.</p>
+          <h3>Discussions</h3>
+          <p>Commentary and essay-style videos paced so your argument actually lands.</p>
         </div>
         <div class="service-card">
           <div class="service-num">03</div>
-          <h3>Discussions</h3>
-          <p>Commentary and essay-style videos paced so your argument actually lands.</p>
+          <h3>Let's plays</h3>
+          <p>Tight, watchable playthroughs with the dead air cut and the best moments pushed forward.</p>
         </div>
         <div class="service-card">
           <div class="service-num">04</div>
@@ -1209,7 +1229,7 @@
         </div>
         <div class="featured-meta">
           <h3>Nintendo Switch 2 After 1 Year... Did it Live Up to the Hype!?</h3>
-          <div class="work-channel">Ray's Nintendo Talk &middot; 3.6k</div>
+          <div class="work-channel">Ray's Nintendo Talk &middot; 3.6k subscribers</div>
         </div>
       </div>
 
@@ -1226,7 +1246,7 @@
           </div>
           <div class="work-info">
             <div class="work-title">We Survived 100 Days of DUO Cisco's ULTIMATE RPG in Minecraft</div>
-            <div class="work-channel">IsKevin &middot; 60k</div>
+            <div class="work-channel">IsKevin &middot; 60k subscribers</div>
             <div class="work-role">Rough cuts (all 100 days)</div>
           </div>
         </div>
@@ -1242,7 +1262,7 @@
           </div>
           <div class="work-info">
             <div class="work-title">AYN Odin 3 Max Review - Next Level Emulation</div>
-            <div class="work-channel">Restalgia &middot; 49k</div>
+            <div class="work-channel">Restalgia &middot; 49k subscribers</div>
           </div>
         </div>
 
@@ -1257,7 +1277,7 @@
           </div>
           <div class="work-info">
             <div class="work-title">Resident Evil 4's BIGGEST PROBLEM - Babysitting</div>
-            <div class="work-channel">RNG Gamer &middot; 55k</div>
+            <div class="work-channel">RNG Gamer &middot; 55k subscribers</div>
           </div>
         </div>
 
@@ -1354,16 +1374,26 @@
             His edits have boosted my retention rates, he is easy to work with and has undoubtedly
             made my channel better.
           </blockquote>
-          <p class="quote-attr"><span class="dot" aria-hidden="true"></span> <strong>Ray's Nintendo Talk</strong> &middot; 3.6k subscribers</p>
+          <p class="quote-attr">
+            <span class="quote-avatar" aria-hidden="true"><img src="assets/logos/rays-nintendo-talk.jpg" alt="" loading="lazy" onerror="this.closest('.quote-avatar').remove()"></span>
+            <span><strong>Ray's Nintendo Talk</strong> &middot; 3.6k subscribers</span>
+          </p>
         </div>
 
-        <div class="featured-quote reveal">
-          <blockquote>
-            Working with Jonathan has been a great experience. He's reliable, easy to communicate
-            with, and really understands the style I'm going for. I'd definitely recommend him to
-            anyone looking for a dependable video editor.
-          </blockquote>
-          <p class="quote-attr"><span class="dot" aria-hidden="true"></span> <strong>Restalgia</strong> &middot; 49k subscribers</p>
+        <!-- Smaller supporting quotes (right column, next to Ray's featured quote).
+             Add another <figure class="mini-quote"> here and it will stack under Restalgia. -->
+        <div class="testi-small stagger">
+          <figure class="mini-quote reveal">
+            <blockquote>
+              Working with Jonathan has been a great experience. He's reliable, easy to communicate
+              with, and really understands the style I'm going for. I'd definitely recommend him to
+              anyone looking for a dependable video editor.
+            </blockquote>
+            <figcaption>
+              <span class="quote-avatar" aria-hidden="true"><img src="assets/logos/restalgia.jpg" alt="" loading="lazy" onerror="this.closest('.quote-avatar').remove()"></span>
+              <span><strong>Restalgia</strong> &middot; 49k subscribers</span>
+            </figcaption>
+          </figure>
         </div>
       </div>
 
@@ -1403,14 +1433,6 @@
           <span class="roster-info">
             <span class="roster-name">IsKevin</span>
             <span class="roster-subs">60k subscribers</span>
-          </span>
-          <svg class="roster-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </a>
-        <a class="roster-card" href="https://www.youtube.com/watch?v=Oo3tn0_xfn4" target="_blank" rel="noopener noreferrer">
-          <span class="roster-avatar" aria-hidden="true">D<img class="roster-logo" src="assets/logos/dastardly-john.jpg" alt="" loading="lazy" onerror="this.remove()"></span>
-          <span class="roster-info">
-            <span class="roster-name">Dastardly John</span>
-            <span class="roster-subs">Gaming and commentary</span>
           </span>
           <svg class="roster-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
         </a>
@@ -1522,10 +1544,7 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-logo">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 54" fill="none" aria-hidden="true" focusable="false">
-            <polygon points="14,2 26,27 14,52 2,27" stroke="#8000FF" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
-            <polygon points="14,16 20,27 14,38 8,27" stroke="#8000FF" stroke-width="1.8" fill="#000000" stroke-linejoin="round"/>
-          </svg>
+          <img src="av.png" alt="" class="footer-logo-img">
           Amrhein Video
         </div>
         <!-- >>> EDIT FOOTER: update the year below each January. -->
