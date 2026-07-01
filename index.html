@@ -512,54 +512,6 @@
       to   { transform: translateX(-50%); }
     }
 
-    /* ===== SERVICES ===== */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-    }
-    .service-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.85rem 1.6rem;
-      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s, background 0.25s;
-      position: relative;
-      overflow: hidden;
-    }
-    .service-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      opacity: 0.35;
-      transition: opacity 0.25s;
-    }
-    .service-card:hover {
-      border-color: rgba(128, 0, 255, 0.4);
-      background: var(--card-2);
-      box-shadow: 0 0 28px rgba(128, 0, 255, 0.12);
-      transform: translateY(-4px);
-    }
-    .service-card:hover::before { opacity: 1; }
-    .service-num {
-      font-family: var(--font-display);
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      margin-bottom: 1.1rem;
-    }
-    .service-card h3 {
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin-bottom: 0.55rem;
-    }
-    .service-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
-    /* span first service across to vary rhythm */
-    .service-card.wide { grid-column: span 2; }
 
     /* ===== WORK ===== */
     .work-head {
@@ -956,7 +908,7 @@
       .marquee-track { animation: none; transform: none; }
       .reveal, .stagger > * { opacity: 1 !important; transform: none !important; transition: none !important; }
       .video-facade img, .video-facade:hover img { transition: none; transform: none; }
-      .service-card, .work-card, .process-card, .roster-card, .faq-item { transition: none; }
+      .work-card, .process-card, .roster-card, .faq-item { transition: none; }
     }
 
     /* ===== RESPONSIVE ===== */
@@ -968,8 +920,6 @@
     @media (max-width: 860px) {
       .nav-links, .nav-cta { display: none; }
       .nav-hamburger { display: flex; }
-      .services-grid { grid-template-columns: repeat(2, 1fr); }
-      .service-card.wide { grid-column: span 2; }
       .work-grid { grid-template-columns: repeat(2, 1fr); }
       .process-list { grid-template-columns: repeat(2, 1fr); }
     }
@@ -985,8 +935,6 @@
       .hero-stat { flex: none; width: 100%; padding: 0; }
       .hero-stat + .hero-stat { padding-left: 0; border-left: none; padding-top: 1.25rem; border-top: 1px solid var(--border); }
       .hero-stat-num { font-size: 1.5rem; }
-      .services-grid { grid-template-columns: 1fr; }
-      .service-card.wide { grid-column: span 1; }
       .work-grid { grid-template-columns: 1fr; }
       .process-list { grid-template-columns: 1fr; }
       .work-headline-stat { text-align: left; }
@@ -1015,7 +963,6 @@
      >>> EDIT HERO TEXT ......... the "#hero" section below
      >>> EDIT HERO STATS ........ the "hero-stats" block (the 4 numbers)
      >>> EDIT SHOWREEL .......... the "hero-reel" block (change the video ID)
-     >>> EDIT SERVICES .......... the "#services" section
      >>> EDIT WORK VIDEOS ....... the "#work" section
      >>> EDIT PROCESS ........... the "#process" section
      >>> EDIT TESTIMONIALS ...... the "#testimonials" section
@@ -1048,7 +995,6 @@
       </a>
 
       <ul class="nav-links" role="list">
-        <li><a href="#services">Services</a></li>
         <li><a href="#work">Work</a></li>
         <li><a href="#process">Process</a></li>
         <li><a href="#testimonials">Testimonials</a></li>
@@ -1063,7 +1009,6 @@
     </div>
 
     <div class="nav-mobile" id="nav-mobile">
-      <a href="#services">Services</a>
       <a href="#work">Work</a>
       <a href="#process">Process</a>
       <a href="#testimonials">Testimonials</a>
@@ -1174,46 +1119,6 @@
       </div>
     </div>
   </div>
-
-  <!-- ===== SERVICES ===== -->
-  <section id="services">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow">Services</span>
-        <h2 class="section-title">What I edit</h2>
-        <p class="section-intro">Gaming first, tech close behind. Whatever the format, the goal is the same: keep your viewers watching to the end.</p>
-      </div>
-      <!-- >>> EDIT SERVICES: each "service-card" is one service. Change the <h3> title
-           and the <p> description. The number ("01") is just a label. -->
-      <div class="services-grid stagger">
-        <div class="service-card wide">
-          <div class="service-num">01</div>
-          <h3>Reviews</h3>
-          <p>A good review walks viewers through the verdict: what works, what does not, and whether it is worth their money. I cut it so your points land in a clear order, the footage backs up every claim, and people stick around for your final recommendation.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-num">02</div>
-          <h3>Discussions</h3>
-          <p>Commentary and essay-style videos paced so your argument actually lands.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-num">03</div>
-          <h3>Let's plays</h3>
-          <p>Tight, watchable playthroughs with the dead air cut and the best moments pushed forward.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-num">04</div>
-          <h3>Live stream cuts</h3>
-          <p>Raw VODs turned into shareable highlights without losing the energy.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-num">05</div>
-          <h3>Hardware and tech</h3>
-          <p>Product walkthroughs and tech content edited to be clear, visual, and punchy.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ===== WORK ===== -->
   <section id="work">
