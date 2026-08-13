@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
   <link rel="canonical" href="https://amrheinvideo.com/">
   <link rel="icon" type="image/png" href="av.png">
   <link rel="apple-touch-icon" href="av.png">
-  <title>Amrhein Video</title>
-  <meta name="description" content="Amrhein Video is Jonathan's freelance video editing service for YouTube creators. Specializing in gaming and tech content - let's plays, reviews, discussions, live stream cuts, and hardware.">
+  <title>Freelance YouTube Video Editor for Gaming &amp; Tech Channels | Amrhein Video</title>
+  <meta name="description" content="Freelance YouTube video editor for gaming and tech creators. Long-form edits, live stream cuts, Shorts, and thumbnails. Unlimited revisions, direct 1:1 collaboration.">
   <meta property="og:title" content="Amrhein Video">
   <meta property="og:description" content="Freelance YouTube video editing for gaming and tech creators. Let's make something together.">
   <meta property="og:type" content="website">
@@ -21,7 +22,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://i.ytimg.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+  <!-- Fonts loaded non-render-blocking: applied via media switch on load, with a noscript fallback. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,700;1,800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,700;1,800&display=swap"></noscript>
   <style>
     /* ===== CUSTOM PROPERTIES =====
        >>> EDIT COLORS & FONTS
@@ -660,9 +663,9 @@
 
     .testi-quotes {
       display: grid;
-      grid-template-columns: 1.6fr 1fr;
+      grid-template-columns: 0.9fr 1.1fr;
       gap: 1.25rem;
-      align-items: start;
+      align-items: stretch;
     }
     /* The smaller supporting quote(s) sit in the narrower right column and stack. */
     .testi-small {
@@ -945,7 +948,75 @@
     @media (max-width: 380px) {
       .hero-headline .nowrap { white-space: normal; }
     }
+
+    /* ===== LIGHT MODE =====
+       Automatically shown to visitors whose system/browser is set to light mode.
+       Dark (the :root values above) stays the default. Only colors change here;
+       the violet accent (--accent) is shared by both themes. */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #FFFFFF;             /* white page background */
+        --surface: #F4F4F7;       /* light recessed sections */
+        --card: #FFFFFF;          /* white cards (separated by border) */
+        --card-2: #F0F0F4;        /* card hover background */
+        --text: #0A0A0A;          /* near-black text */
+        --text-muted: #56565E;    /* secondary text */
+        --text-dim: #8A8A93;      /* faint text */
+        --border: rgba(0, 0, 0, 0.10);
+        --border-strong: rgba(0, 0, 0, 0.16);
+      }
+      /* Frosted nav glass: dark -> light */
+      .nav-inner { background: rgba(255, 255, 255, 0.72); }
+      #nav.scrolled .nav-inner { background: rgba(255, 255, 255, 0.88); }
+      .nav-mobile { background: rgba(255, 255, 255, 0.97); }
+      /* Primary-button focus ring visible on white */
+      .btn-primary:focus-visible { outline-color: var(--text); }
+      /* Soften the violet glows and grain so they read as subtle tints on white */
+      .hero-glow-1 { background: radial-gradient(circle, rgba(128, 0, 255, 0.16), transparent 70%); }
+      .hero-glow-2 { background: radial-gradient(circle, rgba(128, 0, 255, 0.10), transparent 70%); }
+      .contact-glow { background: radial-gradient(circle, rgba(128, 0, 255, 0.12), transparent 70%); }
+      body::after { opacity: 0.025; }
+    }
   </style>
+
+  <!-- Structured data: helps search engines understand the business and tie it to your profiles. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://amrheinvideo.com/#business",
+        "name": "Amrhein Video",
+        "url": "https://amrheinvideo.com/",
+        "image": "https://amrheinvideo.com/social-share.png",
+        "description": "Freelance YouTube video editing for gaming and tech creators.",
+        "priceRange": "$$",
+        "areaServed": "Worldwide",
+        "founder": { "@id": "https://amrheinvideo.com/#jonathan" },
+        "makesOffer": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "YouTube long-form video editing" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Live stream cutdowns" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "YouTube Shorts editing" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Thumbnail design" } }
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://amrheinvideo.com/#jonathan",
+        "name": "Jonathan Amrhein",
+        "jobTitle": "Freelance Video Editor",
+        "url": "https://amrheinvideo.com/",
+        "knowsAbout": ["Video editing", "YouTube content production", "Gaming content", "Tech reviews"],
+        "sameAs": [
+          "https://x.com/amrheinvideo",
+          "https://www.instagram.com/amrheinvideo/",
+          "https://www.linkedin.com/in/jonathan-amrhein-04b784337/"
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -1086,6 +1157,9 @@
         <span class="marquee-item">Gaming Corner Podcast</span>
         <span class="marquee-item">TeaCup Diaries</span>
         <span class="marquee-item">Faith Bible Church</span>
+        <span class="marquee-item">KevoActive</span>
+        <span class="marquee-item">Its_ILN</span>
+        <span class="marquee-item">spear_paul</span>
       </div>
       <div class="marquee-group">
         <span class="marquee-item">Ray's Nintendo Talk</span>
@@ -1096,6 +1170,9 @@
         <span class="marquee-item">Gaming Corner Podcast</span>
         <span class="marquee-item">TeaCup Diaries</span>
         <span class="marquee-item">Faith Bible Church</span>
+        <span class="marquee-item">KevoActive</span>
+        <span class="marquee-item">Its_ILN</span>
+        <span class="marquee-item">spear_paul</span>
       </div>
       <div class="marquee-group">
         <span class="marquee-item">Ray's Nintendo Talk</span>
@@ -1106,6 +1183,9 @@
         <span class="marquee-item">Gaming Corner Podcast</span>
         <span class="marquee-item">TeaCup Diaries</span>
         <span class="marquee-item">Faith Bible Church</span>
+        <span class="marquee-item">KevoActive</span>
+        <span class="marquee-item">Its_ILN</span>
+        <span class="marquee-item">spear_paul</span>
       </div>
       <div class="marquee-group">
         <span class="marquee-item">Ray's Nintendo Talk</span>
@@ -1116,6 +1196,9 @@
         <span class="marquee-item">Gaming Corner Podcast</span>
         <span class="marquee-item">TeaCup Diaries</span>
         <span class="marquee-item">Faith Bible Church</span>
+        <span class="marquee-item">KevoActive</span>
+        <span class="marquee-item">Its_ILN</span>
+        <span class="marquee-item">spear_paul</span>
       </div>
     </div>
   </div>
@@ -1130,7 +1213,7 @@
           <p class="section-intro">Real videos for real channels. Click any thumbnail to play it right here.</p>
         </div>
         <div class="work-headline-stat">
-          <span class="work-headline-num">250k+</span>
+          <span class="work-headline-num">300k+</span>
           <span class="work-headline-label">Views generated</span>
         </div>
       </div>
@@ -1171,7 +1254,7 @@
           </div>
           <div class="work-info">
             <div class="work-title">We Survived 100 Days of DUO Cisco's ULTIMATE RPG in Minecraft</div>
-            <div class="work-channel">IsKevin &middot; 60k subscribers</div>
+            <div class="work-channel">IsKevin &middot; 65k subscribers</div>
             <div class="work-role">Rough cuts (all 100 days)</div>
           </div>
         </div>
@@ -1192,17 +1275,17 @@
         </div>
 
         <div class="work-card">
-          <div class="video" data-video="_yDLAbTOmtg">
-            <button class="video-facade" type="button" aria-label="Play video: Resident Evil 4's BIGGEST PROBLEM - Babysitting">
-              <img src="https://i.ytimg.com/vi/_yDLAbTOmtg/maxresdefault.jpg"
-                   onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/_yDLAbTOmtg/hqdefault.jpg';"
-                   alt="Thumbnail: Resident Evil 4's BIGGEST PROBLEM - Babysitting" loading="lazy" width="1280" height="720">
+          <div class="video" data-video="vuhDhNow6YE">
+            <button class="video-facade" type="button" aria-label="Play video: Wait, it's like Dark Souls!?!?! - Alice Madness Returns">
+              <img src="https://i.ytimg.com/vi/vuhDhNow6YE/maxresdefault.jpg"
+                   onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/vuhDhNow6YE/hqdefault.jpg';"
+                   alt="Thumbnail: Wait, it's like Dark Souls!?!?! - Alice Madness Returns" loading="lazy" width="1280" height="720">
               <span class="facade-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>
             </button>
           </div>
           <div class="work-info">
-            <div class="work-title">Resident Evil 4's BIGGEST PROBLEM - Babysitting</div>
-            <div class="work-channel">RNG Gamer &middot; 55k subscribers</div>
+            <div class="work-title">Wait, it's like Dark Souls!?!?! - Alice Madness Returns</div>
+            <div class="work-channel">RNG Gamer &middot; 60k subscribers</div>
           </div>
         </div>
 
@@ -1304,7 +1387,7 @@
         </div>
         <div class="testi-video-label">
           <span class="quote-avatar" aria-hidden="true"><img src="assets/logos/rng-gamer.jpg" alt="" loading="lazy" onerror="this.closest('.quote-avatar').remove()"></span>
-          <span><strong>RNG Gamer</strong> &middot; 55k subscribers</span>
+          <span><strong>RNG Gamer</strong> &middot; 60k subscribers</span>
         </div>
       </div>
 
@@ -1324,20 +1407,16 @@
           </p>
         </div>
 
-        <!-- Smaller supporting quotes (right column, next to Ray's featured quote).
-             Add another <figure class="mini-quote"> here and it will stack under Restalgia. -->
-        <div class="testi-small stagger">
-          <figure class="mini-quote reveal">
-            <blockquote>
-              Working with Jonathan has been a great experience. He's reliable, easy to communicate
-              with, and really understands the style I'm going for. I'd definitely recommend him to
-              anyone looking for a dependable video editor.
-            </blockquote>
-            <figcaption>
-              <span class="quote-avatar" aria-hidden="true"><img src="assets/logos/restalgia.jpg" alt="" loading="lazy" onerror="this.closest('.quote-avatar').remove()"></span>
-              <span><strong>Restalgia</strong> &middot; 49k subscribers</span>
-            </figcaption>
-          </figure>
+        <div class="featured-quote reveal">
+          <blockquote>
+            Working with Jonathan has been a great experience. He's reliable, easy to communicate
+            with, and really understands the style I'm going for. I'd definitely recommend him to
+            anyone looking for a dependable video editor.
+          </blockquote>
+          <p class="quote-attr">
+            <span class="quote-avatar" aria-hidden="true"><img src="assets/logos/restalgia.jpg" alt="" loading="lazy" onerror="this.closest('.quote-avatar').remove()"></span>
+            <span><strong>Restalgia</strong> &middot; 49k subscribers</span>
+          </p>
         </div>
       </div>
 
@@ -1368,7 +1447,7 @@
           <span class="roster-avatar" aria-hidden="true">R<img class="roster-logo" src="assets/logos/rng-gamer.jpg" alt="" loading="lazy" onerror="this.remove()"></span>
           <span class="roster-info">
             <span class="roster-name">RNG Gamer</span>
-            <span class="roster-subs">55k subscribers</span>
+            <span class="roster-subs">60k subscribers</span>
           </span>
           <svg class="roster-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
         </a>
@@ -1376,7 +1455,7 @@
           <span class="roster-avatar" aria-hidden="true">I<img class="roster-logo" src="assets/logos/iskevin.jpg" alt="" loading="lazy" onerror="this.remove()"></span>
           <span class="roster-info">
             <span class="roster-name">IsKevin</span>
-            <span class="roster-subs">60k subscribers</span>
+            <span class="roster-subs">65k subscribers</span>
           </span>
           <svg class="roster-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
         </a>
@@ -1415,6 +1494,10 @@
         <details class="faq-item reveal">
           <summary>What types of videos do you edit?<span class="faq-icon" aria-hidden="true"></span></summary>
           <div class="faq-answer"><p>Gaming first: let's plays, reviews, discussions, and live stream cuts, plus hardware and tech content. If your channel lives in that world, we are a good fit.</p></div>
+        </details>
+        <details class="faq-item reveal">
+          <summary>Do you do thumbnails or Shorts?<span class="faq-icon" aria-hidden="true"></span></summary>
+          <div class="faq-answer"><p>Yes, both. Alongside your long-form edits I design click-worthy thumbnails and cut vertical Shorts from your footage, so you can hand off a complete upload instead of piecing it together yourself.</p></div>
         </details>
         <details class="faq-item reveal">
           <summary>Do you take on ongoing work?<span class="faq-icon" aria-hidden="true"></span></summary>
