@@ -38,14 +38,21 @@
       --card-2: #161616;        /* card hover background */
       --text: #FFFFFF;          /* main text / headings */
       --text-muted: #A1A1A1;    /* secondary body text */
-      --text-dim: #6B6B6B;      /* faint text (marquee, footer) */
-      --accent: #8000FF;        /* THE brand violet - buttons, links, accents */
+      --text-dim: #828282;      /* faint text (footer, etc.) - AA on black */
+      --accent: #8000FF;        /* THE brand violet - buttons, glows, large elements */
+      --accent-text: #9B4DFF;   /* violet for SMALL text only - lighter so it passes AA on black */
       --accent-soft: rgba(128, 0, 255, 0.5);
       --border: rgba(255, 255, 255, 0.08);
       --border-strong: rgba(255, 255, 255, 0.14);
       --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      --radius: 16px;
+      /* Radius scale: three steps only. sm = controls, md = cards, lg = large panels. */
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --avatar: 42px;           /* avatar in cards (recommendations, testimonials) */
+      --avatar-sm: 28px;        /* avatar in the compact roster pills */
+      --lift: -2px;             /* one card hover lift everywhere */
       --maxw: 1180px;
     }
 
@@ -110,7 +117,7 @@
       font-weight: 600;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-text);
       margin-bottom: 1.1rem;
     }
 
@@ -186,6 +193,15 @@
       transition: color 0.2s;
       position: relative;
     }
+    /* Invisible 44px hit area so the nav links are a comfortable target.
+       Purely a click zone: no layout or visual change. */
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 50%;
+      transform: translateY(-50%);
+      height: 44px;
+    }
     .nav-links a::after {
       content: '';
       position: absolute;
@@ -239,7 +255,7 @@
       cursor: pointer;
     }
     .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.25s, opacity 0.25s; }
-    .nav-hamburger:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 8px; }
+    .nav-hamburger:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-sm); }
     .nav-hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .nav-hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
     .nav-hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -253,7 +269,7 @@
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       padding: 1.25rem 1.5rem;
       flex-direction: column;
     }
@@ -267,7 +283,10 @@
     }
     .nav-mobile a:nth-last-child(2) { border-bottom: none; }
     .nav-mobile a:hover, .nav-mobile a:focus-visible { color: var(--text); }
-    .nav-mobile .btn { margin-top: 1rem; width: 100%; border-radius: 12px; }
+    /* Keep the button's own white label: ".nav-mobile a" above is more specific
+       than ".btn-primary", so without this the text inherits the muted link colour. */
+    .nav-mobile .btn { margin-top: 1rem; width: 100%; border-radius: var(--radius-sm); }
+    .nav-mobile .btn-primary { color: #fff; }
 
     /* ===== AMBIENT GLOWS ===== */
     .glow {
@@ -396,7 +415,7 @@
     .video {
       position: relative;
       aspect-ratio: 16 / 9;
-      border-radius: 14px;
+      border-radius: var(--radius-md);
       overflow: hidden;
       background: var(--card);
       border: 1px solid var(--border);
@@ -472,48 +491,67 @@
       border-radius: 9999px;
     }
 
-    /* ===== MARQUEE / TRUST ===== */
-    .marquee {
+    /* ===== RECOMMENDED BY (creator recommendation cards) ===== */
+    .recs {
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
+      padding: 3.25rem 0;
+    }
+    .recs-eyebrow {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      margin: 0 0 1.75rem;
+    }
+    .recs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .rec-card {
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1.3rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s, background 0.25s;
+    }
+    .rec-card:hover {
+      border-color: rgba(128, 0, 255, 0.4);
+      background: var(--card-2);
+      box-shadow: 0 0 20px rgba(128, 0, 255, 0.12);
+      transform: translateY(var(--lift));
+    }
+    .rec-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .rec-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.65rem; }
+    .rec-avatar {
+      display: inline-flex;
+      width: var(--avatar); height: var(--avatar);
+      border-radius: 50%;
       overflow: hidden;
-      padding: 1.5rem 0;
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-      mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-    }
-    .marquee-track {
-      display: flex;
-      width: max-content;
-      animation: scroll-x 60s linear infinite;
-      will-change: transform;
-    }
-    .marquee-group {
-      display: flex;
-      align-items: center;
+      border: 1px solid var(--border-strong);
       flex-shrink: 0;
     }
-    .marquee-item {
+    .rec-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .rec-name {
       font-family: var(--font-display);
+      font-weight: 600;
       font-size: 1rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      white-space: nowrap;
+    }
+    .rec-stars {
       display: flex;
-      align-items: center;
-      gap: 3.5rem;
-      margin-right: 3.5rem;
+      gap: 0.2rem;
+      color: var(--accent-text);
     }
-    .marquee-item::after {
-      content: '';
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      opacity: 0.6;
-    }
-    @keyframes scroll-x {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
+    .rec-star { width: 15px; height: 15px; }
 
 
     /* ===== WORK ===== */
@@ -547,21 +585,11 @@
       padding: 1.6rem;
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 22px;
+      border-radius: var(--radius-lg);
       transition: border-color 0.3s, box-shadow 0.3s;
     }
     .work-featured:hover { border-color: rgba(128, 0, 255, 0.35); box-shadow: 0 0 40px rgba(128, 0, 255, 0.1); }
-    .work-featured .video { border-radius: 14px; }
-    .featured-meta .tag {
-      display: inline-block;
-      font-family: var(--font-display);
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
+    .work-featured .video { border-radius: var(--radius-md); }
     .featured-meta h3 {
       font-family: var(--font-display);
       font-size: clamp(1.3rem, 2vw, 1.75rem);
@@ -601,7 +629,7 @@
       text-align: center;
       background: linear-gradient(160deg, rgba(128, 0, 255, 0.14), var(--card));
       border: 1px solid rgba(128, 0, 255, 0.25);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       padding: 2.75rem 1.5rem;
     }
     .work-cta h3 {
@@ -614,11 +642,11 @@
     .work-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       overflow: hidden;
       transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     }
-    .work-card:hover { border-color: rgba(128, 0, 255, 0.4); box-shadow: 0 0 26px rgba(128, 0, 255, 0.14); transform: translateY(-4px); }
+    .work-card:hover { border-color: rgba(128, 0, 255, 0.4); box-shadow: 0 0 26px rgba(128, 0, 255, 0.14); transform: translateY(var(--lift)); }
     .work-card .video { border-radius: 0; border: none; border-bottom: 1px solid var(--border); }
     .work-info { padding: 1.1rem 1.15rem 1.3rem; }
     .work-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; line-height: 1.35; margin-bottom: 0.4rem; }
@@ -636,11 +664,11 @@
     .process-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       padding: 1.85rem 1.6rem;
       transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     }
-    .process-card:hover { border-color: rgba(128, 0, 255, 0.4); box-shadow: 0 0 24px rgba(128, 0, 255, 0.12); transform: translateY(-4px); }
+    .process-card:hover { border-color: rgba(128, 0, 255, 0.4); box-shadow: 0 0 24px rgba(128, 0, 255, 0.12); transform: translateY(var(--lift)); }
     .process-step-num {
       font-family: var(--font-display);
       font-size: 2.5rem;
@@ -683,30 +711,15 @@
       gap: 1.25rem;
       align-items: stretch;
     }
-    /* The smaller supporting quote(s) sit in the narrower right column and stack. */
-    .testi-small {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
     .featured-quote {
       background: var(--card);
       border: 1px solid var(--border);
       border-left: 2px solid var(--accent);
-      border-radius: 22px;
+      border-radius: var(--radius-lg);
       padding: 2.75rem 2.5rem;
       position: relative;
       display: flex;
       flex-direction: column;
-    }
-    .quote-mark {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 5rem;
-      line-height: 0.7;
-      color: var(--accent);
-      opacity: 0.35;
-      display: block;
-      margin-bottom: 0.5rem;
     }
     .featured-quote blockquote { font-size: 1.2rem; line-height: 1.65; font-weight: 400; margin-bottom: 1.5rem; }
     .quote-attr { display: flex; align-items: center; gap: 0.7rem; font-size: 0.9rem; color: var(--text-muted); margin-top: auto; }
@@ -715,7 +728,7 @@
 
     /* Channel logo beside a testimonial name */
     .quote-avatar {
-      width: 38px; height: 38px;
+      width: var(--avatar); height: var(--avatar);
       border-radius: 50%;
       overflow: hidden;
       flex-shrink: 0;
@@ -723,49 +736,43 @@
       border: 1px solid var(--border-strong);
     }
     .quote-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .mini-quote .quote-avatar { width: 32px; height: 32px; }
-
-    .mini-quote {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--accent);
-      border-radius: 12px;
-      padding: 1.3rem 1.4rem;
-      display: flex;
-      flex-direction: column;
-    }
-    .mini-quote blockquote { font-size: 1rem; line-height: 1.55; color: var(--text); margin-bottom: 0.8rem; }
-    .mini-quote figcaption { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
-    .mini-quote figcaption strong { color: var(--text); font-weight: 600; }
-    .mini-quote .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
     /* ===== CLIENT ROSTER ===== */
-    .roster {
+    .roster-label {
       margin-top: 3rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
-      gap: 1rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
     }
-    .roster-card {
+    .roster {
       display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+    /* Deliberately a compact pill strip, not a card - so it reads as a different
+       component from the recommendation cards up top. */
+    .roster-card {
+      display: inline-flex;
       align-items: center;
-      gap: 0.85rem;
-      background: var(--card);
+      gap: 0.6rem;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 0.95rem 1.05rem;
-      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s, background 0.25s;
+      border-radius: 9999px;
+      padding: 0.35rem 0.95rem 0.35rem 0.35rem;
+      min-height: 44px;              /* keep it a comfortable tap target */
+      transition: border-color 0.25s, background 0.25s;
     }
     .roster-card:hover {
       border-color: rgba(128, 0, 255, 0.4);
       background: var(--card-2);
-      box-shadow: 0 0 24px rgba(128, 0, 255, 0.12);
-      transform: translateY(-3px);
     }
     .roster-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     .roster-avatar {
       position: relative;
-      width: 42px; height: 42px;
+      width: var(--avatar-sm); height: var(--avatar-sm);
       border-radius: 50%;
       overflow: hidden;
       display: grid;
@@ -773,7 +780,7 @@
       flex-shrink: 0;
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 0.75rem;
       color: #fff;
       background: linear-gradient(135deg, var(--accent), rgba(128, 0, 255, 0.4));
     }
@@ -783,17 +790,16 @@
       width: 100%; height: 100%;
       object-fit: cover;
     }
-    .roster-info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .roster-info { display: inline-flex; align-items: baseline; gap: 0.4rem; min-width: 0; }
     .roster-name {
       font-family: var(--font-display);
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
-    .roster-subs { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; white-space: nowrap; }
-    .roster-arrow { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-dim); transition: color 0.2s, transform 0.2s; }
+    .roster-subs { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+    .roster-subs::before { content: '\00b7'; margin-right: 0.4rem; }
+    .roster-arrow { width: 13px; height: 13px; flex-shrink: 0; color: var(--text-dim); transition: color 0.2s, transform 0.2s; }
     .roster-card:hover .roster-arrow { color: var(--accent); transform: translate(2px, -2px); }
 
     /* ===== FAQ ===== */
@@ -801,7 +807,7 @@
     .faq-item {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: var(--radius-md);
       overflow: hidden;
       transition: border-color 0.25s, box-shadow 0.25s;
     }
@@ -820,7 +826,7 @@
       color: var(--text);
     }
     .faq-item summary::-webkit-details-marker { display: none; }
-    .faq-item summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 14px; }
+    .faq-item summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--radius-md); }
     .faq-icon { position: relative; width: 20px; height: 20px; flex-shrink: 0; }
     .faq-icon::before, .faq-icon::after {
       content: '';
@@ -871,7 +877,7 @@
     .contact-form {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 22px;
+      border-radius: var(--radius-lg);
       padding: 2rem;
     }
     .form-group { margin-bottom: 1.1rem; }
@@ -880,7 +886,7 @@
       width: 100%;
       background: var(--surface);
       border: 1px solid var(--border-strong);
-      border-radius: 11px;
+      border-radius: var(--radius-sm);
       padding: 0.8rem 1rem;
       color: var(--text);
       font-family: var(--font);
@@ -896,8 +902,8 @@
     .form-group textarea { height: 130px; resize: vertical; min-height: 80px; }
     .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(161, 161, 161, 0.45); }
     .botcheck { position: absolute; left: -9999px; opacity: 0; }
-    .form-submit .btn { width: 100%; font-size: 1rem; padding: 0.9rem; border-radius: 12px; margin-top: 0.4rem; }
-    .form-message { display: none; padding: 1rem 1.25rem; border-radius: 11px; margin-top: 1.1rem; font-size: 0.9rem; text-align: center; line-height: 1.5; }
+    .form-submit .btn { width: 100%; font-size: 1rem; padding: 0.9rem; border-radius: var(--radius-sm); margin-top: 0.4rem; }
+    .form-message { display: none; padding: 1rem 1.25rem; border-radius: var(--radius-sm); margin-top: 1.1rem; font-size: 0.9rem; text-align: center; line-height: 1.5; }
     .form-message.success { display: block; background: rgba(0, 200, 100, 0.08); border: 1px solid rgba(0, 200, 100, 0.28); color: #5de8a0; }
     .form-message.error { display: block; background: rgba(255, 80, 80, 0.08); border: 1px solid rgba(255, 80, 80, 0.28); color: #ff9090; }
 
@@ -912,8 +918,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       border: 1px solid var(--border-strong);
       color: var(--text-muted);
@@ -939,10 +945,9 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .glow, .hero-badge-dot { animation: none !important; }
-      .marquee-track { animation: none; transform: none; }
       .reveal, .stagger > * { opacity: 1 !important; transform: none !important; transition: none !important; }
       .video-facade img, .video-facade:hover img { transition: none; transform: none; }
-      .work-card, .process-card, .roster-card, .faq-item { transition: none; }
+      .work-card, .process-card, .roster-card, .faq-item, .rec-card { transition: none; }
     }
 
     /* ===== RESPONSIVE ===== */
@@ -956,11 +961,23 @@
       .nav-hamburger { display: flex; }
       .work-grid { grid-template-columns: repeat(2, 1fr); }
       .process-list { grid-template-columns: repeat(2, 1fr); }
+      /* 3 rec cards get cramped here; go 2-up so names stay on one line. */
+      .recs-grid { grid-template-columns: repeat(2, 1fr); max-width: 520px; }
     }
     @media (max-width: 600px) {
       section { padding: 4.5rem 0; }
       #hero { min-height: auto; align-items: flex-start; padding-top: 7rem; padding-bottom: 3.5rem; }
-      .hero-text { width: 100%; }
+      /* On phones, lift the showreel above the stats so the video is visible
+         without scrolling. display:contents promotes the hero-text children
+         into the hero-grid flex row so they can be reordered around the reel. */
+      .hero-text { display: contents; }
+      .hero-grid { gap: 0; text-align: center; }
+      .hero-badge { order: 1; }
+      .hero-headline { order: 2; width: 100%; }
+      .hero-sub { order: 3; width: 100%; }
+      .hero-cta { order: 4; width: 100%; }
+      .hero-reel { order: 5; width: 100%; margin-bottom: 2.75rem; }
+      .hero-stats { order: 6; width: 100%; }
       .hero-headline { font-size: clamp(1.9rem, 8.5vw, 2.6rem); }
       .hero-headline .nowrap { white-space: normal; }
       .hero-cta { flex-direction: column; align-items: stretch; }
@@ -971,6 +988,7 @@
       .hero-stat-num { font-size: 1.5rem; }
       .work-grid { grid-template-columns: 1fr; }
       .process-list { grid-template-columns: 1fr; }
+      .recs-grid { grid-template-columns: 1fr; max-width: 340px; }
       .work-headline-stat { text-align: left; }
       .featured-quote { padding: 2rem 1.5rem; }
       .contact-form { padding: 1.5rem; }
@@ -992,7 +1010,9 @@
         --card-2: #F0F0F4;        /* card hover background */
         --text: #0A0A0A;          /* near-black text */
         --text-muted: #56565E;    /* secondary text */
-        --text-dim: #8A8A93;      /* faint text */
+        --text-dim: #6B6B75;      /* faint text - AA on white */
+        /* On white the full-strength brand violet already passes AA, so use it. */
+        --accent-text: #8000FF;
         --border: rgba(0, 0, 0, 0.10);
         --border-strong: rgba(0, 0, 0, 0.16);
       }
@@ -1058,20 +1078,25 @@
    This is a single file. Everything lives here: structure (HTML), styling
    (the <style> block in the <head>), and behavior (the <script> at the bottom).
 
+   PAGE ORDER (top to bottom):
+     nav -> hero -> recommendations -> work -> process -> testimonials
+         -> contact form -> FAQ -> footer
+
    The most common things you'll want to change, and where to find them
    (use Ctrl+F / Cmd+F to jump to the >>> EDIT markers):
 
      >>> EDIT COLORS & FONTS .... top of the <style> block, in ":root"
      >>> EDIT HERO TEXT ......... the "#hero" section below
-     >>> EDIT HERO STATS ........ the "hero-stats" block (the 4 numbers)
+     >>> EDIT HERO STATS ........ the "hero-stats" block (the 3 numbers)
      >>> EDIT SHOWREEL .......... the "hero-reel" block (change the video ID)
+     >>> EDIT RECOMMENDATIONS ... the "recs" block (star cards under the hero)
      >>> EDIT WORK VIDEOS ....... the "#work" section
      >>> EDIT PROCESS ........... the "#process" section
      >>> EDIT TESTIMONIALS ...... the "#testimonials" section
-     >>> EDIT CHANNEL ROSTER .... the "roster" block (logos + sub counts)
-     >>> EDIT MARQUEE ........... the "marquee" block (scrolling channel names)
-     >>> EDIT FAQ ............... the "#faq" section
+     >>> EDIT CHANNEL ROSTER .... the "roster" pills (logos + sub counts)
      >>> EDIT CONTACT / EMAIL ... the "#contact" section (form access key)
+     >>> EDIT FAQ ............... the "#faq" section (sits below the form)
+     >>> EDIT SOCIALS ........... the "footer-socials" block
      >>> EDIT FOOTER ............ the <footer> at the very bottom
 
    GOLDEN RULES (so you don't break anything):
@@ -1080,8 +1105,33 @@
      2. To change a video, you only need its YouTube ID (the part after
         "v=" in a YouTube URL). See the note above each video.
      3. Keep every quote mark " and angle bracket < > as they are.
-     4. No long dashes. Use a normal hyphen - instead.
-     5. After editing, save the file and refresh your browser to see changes.
+     4. No long dashes. Use a normal hyphen - instead. No emojis.
+     5. Always write "YouTube" and "Amrhein Video" with that exact casing.
+     6. After editing, save the file and refresh your browser to see changes.
+
+   DESIGN SYSTEM (use these tokens instead of typing raw values, so the
+   site stays consistent. All are defined in :root at the top of <style>):
+     Colours ..... var(--bg) var(--surface) var(--card) var(--text)
+                   var(--text-muted) var(--text-dim) var(--border)
+     Violet ...... var(--accent)       big things: buttons, glows, borders
+                   var(--accent-text)  SMALL text only (it is lighter, so it
+                                       stays readable on black. Never use
+                                       --accent for small text.)
+     Corners ..... var(--radius-sm) 10px  buttons, inputs
+                   var(--radius-md) 16px  cards
+                   var(--radius-lg) 22px  large panels
+                   9999px for pills
+     Avatars ..... var(--avatar) 42px (cards)  var(--avatar-sm) 28px (roster)
+     Card hover .. var(--lift)
+
+   IF YOU CHANGE COLOURS, CHECK CONTRAST: paste the two colours into
+   webaim.org/resources/contrastchecker and aim for 4.5:1 or higher for
+   normal text. The site currently passes in both light and dark mode.
+
+   LIGHT MODE: the site automatically switches to a white theme for visitors
+   whose device is set to light mode. That lives in the
+   "@media (prefers-color-scheme: light)" block near the end of <style>.
+   If you change a colour, check it there too.
 
    A friendlier step-by-step version of this lives in EDITING-GUIDE.md
    in the same folder.
@@ -1143,6 +1193,10 @@
                the small text under it is "hero-stat-label". Keep it to 4 stats so they fit in a row. -->
           <div class="hero-stats reveal">
             <div class="hero-stat">
+              <div class="hero-stat-num">400k+</div>
+              <div class="hero-stat-label">Views generated</div>
+            </div>
+            <div class="hero-stat">
               <div class="hero-stat-num">Unlimited</div>
               <div class="hero-stat-label">Revisions</div>
             </div>
@@ -1172,64 +1226,55 @@
     </div>
   </section>
 
-  <!-- ===== TRUST MARQUEE ===== -->
-  <!-- >>> EDIT MARQUEE (scrolling channel names under the hero)
-       IMPORTANT: there are FOUR identical groups below so the scroll loops with no gap.
-       Whatever you change, make all four groups EXACTLY the same, or the loop will jump.
-       Easiest method: edit the first group, then copy it over the other three. -->
-  <div class="marquee" aria-label="Channels trusted by Amrhein Video">
-    <div class="marquee-track" aria-hidden="true">
-      <div class="marquee-group">
-        <span class="marquee-item">Ray's Nintendo Talk</span>
-        <span class="marquee-item">Restalgia</span>
-        <span class="marquee-item">RNG Gamer</span>
-        <span class="marquee-item">IsKevin</span>
-        <span class="marquee-item">Dastardly John</span>
-        <span class="marquee-item">Gaming Corner Podcast</span>
-        <span class="marquee-item">TeaCup Diaries</span>
-        <span class="marquee-item">Faith Bible Church</span>
-        <span class="marquee-item">KevoActive</span>
-        <span class="marquee-item">Its_ILN</span>
-        <span class="marquee-item">spear_paul</span>
-      </div>
-      <div class="marquee-group">
-        <span class="marquee-item">Ray's Nintendo Talk</span>
-        <span class="marquee-item">Restalgia</span>
-        <span class="marquee-item">RNG Gamer</span>
-        <span class="marquee-item">IsKevin</span>
-        <span class="marquee-item">Dastardly John</span>
-        <span class="marquee-item">Gaming Corner Podcast</span>
-        <span class="marquee-item">TeaCup Diaries</span>
-        <span class="marquee-item">Faith Bible Church</span>
-        <span class="marquee-item">KevoActive</span>
-        <span class="marquee-item">Its_ILN</span>
-        <span class="marquee-item">spear_paul</span>
-      </div>
-      <div class="marquee-group">
-        <span class="marquee-item">Ray's Nintendo Talk</span>
-        <span class="marquee-item">Restalgia</span>
-        <span class="marquee-item">RNG Gamer</span>
-        <span class="marquee-item">IsKevin</span>
-        <span class="marquee-item">Dastardly John</span>
-        <span class="marquee-item">Gaming Corner Podcast</span>
-        <span class="marquee-item">TeaCup Diaries</span>
-        <span class="marquee-item">Faith Bible Church</span>
-        <span class="marquee-item">KevoActive</span>
-        <span class="marquee-item">Its_ILN</span>
-        <span class="marquee-item">spear_paul</span>
-      </div>
-      <div class="marquee-group">
-        <span class="marquee-item">Ray's Nintendo Talk</span>
-        <span class="marquee-item">Restalgia</span>
-        <span class="marquee-item">RNG Gamer</span>
-        <span class="marquee-item">IsKevin</span>
-        <span class="marquee-item">Dastardly John</span>
-        <span class="marquee-item">Gaming Corner Podcast</span>
-        <span class="marquee-item">TeaCup Diaries</span>
-        <span class="marquee-item">Faith Bible Church</span>
-        <span class="marquee-item">KevoActive</span>
-        <span class="marquee-item">Its_ILN</span>
-        <span class="marquee-item">spear_paul</span>
+  <!-- ===== RECOMMENDED BY (creator recommendation cards) ===== -->
+  <!-- >>> EDIT RECOMMENDATIONS: each "rec-card" is one creator. Change the pfp image
+       (assets/logos/...), the name, and keep the five <svg class="rec-star"> for 5 stars.
+       To add a creator, copy a whole <div class="rec-card">...</div> block. -->
+  <div class="recs">
+    <!-- Star shape, defined once and reused via <use> in each card below. -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="rec-star-shape" viewBox="0 0 24 24"><path d="M12 2l2.9 6.26 6.9.6-5.2 4.55 1.55 6.74L12 17.27 5.85 20.75 7.4 14.01 2.2 9.46l6.9-.6z" fill="currentColor"/></symbol></defs></svg>
+    <div class="container">
+      <p class="recs-eyebrow reveal">Recommended by creators</p>
+      <div class="recs-grid stagger">
+        <a href="#testimonials" class="rec-card">
+          <div class="rec-head">
+            <span class="rec-avatar"><img src="assets/logos/rng-gamer.jpg" alt="RNG Gamer" loading="lazy"></span>
+            <div class="rec-name">RNG Gamer</div>
+          </div>
+          <div class="rec-stars" role="img" aria-label="5 out of 5 stars">
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+          </div>
+        </a>
+        <a href="#testimonials" class="rec-card">
+          <div class="rec-head">
+            <span class="rec-avatar"><img src="assets/logos/rays-nintendo-talk.jpg" alt="Ray's Nintendo Talk" loading="lazy"></span>
+            <div class="rec-name">Ray's Nintendo Talk</div>
+          </div>
+          <div class="rec-stars" role="img" aria-label="5 out of 5 stars">
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+          </div>
+        </a>
+        <a href="#testimonials" class="rec-card">
+          <div class="rec-head">
+            <span class="rec-avatar"><img src="assets/logos/restalgia.jpg" alt="Restalgia" loading="lazy"></span>
+            <div class="rec-name">Restalgia</div>
+          </div>
+          <div class="rec-stars" role="img" aria-label="5 out of 5 stars">
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+            <svg class="rec-star" aria-hidden="true"><use href="#rec-star-shape"/></svg>
+          </div>
+        </a>
       </div>
     </div>
   </div>
@@ -1268,7 +1313,7 @@
         </div>
         <div class="featured-meta">
           <h3>Nintendo Switch 2 After 1 Year... Did it Live Up to the Hype!?</h3>
-          <div class="work-channel">Ray's Nintendo Talk &middot; 3.6k subscribers</div>
+          <div class="work-channel">Ray's Nintendo Talk</div>
         </div>
       </div>
 
@@ -1285,7 +1330,7 @@
           </div>
           <div class="work-info">
             <div class="work-title">We Survived 100 Days of DUO Cisco's ULTIMATE RPG in Minecraft</div>
-            <div class="work-channel">IsKevin &middot; 65k subscribers</div>
+            <div class="work-channel">IsKevin</div>
             <div class="work-role">Rough cuts (all 100 days)</div>
           </div>
         </div>
@@ -1301,7 +1346,7 @@
           </div>
           <div class="work-info">
             <div class="work-title">AYN Odin 3 Max Review - Next Level Emulation</div>
-            <div class="work-channel">Restalgia &middot; 49k subscribers</div>
+            <div class="work-channel">Restalgia</div>
           </div>
         </div>
 
@@ -1316,7 +1361,7 @@
           </div>
           <div class="work-info">
             <div class="work-title">Wait, it's like Dark Souls!?!?! - Alice Madness Returns</div>
-            <div class="work-channel">RNG Gamer &middot; 60k subscribers</div>
+            <div class="work-channel">RNG Gamer</div>
           </div>
         </div>
 
@@ -1331,22 +1376,22 @@
           </div>
           <div class="work-info">
             <div class="work-title">What do REGULAR people know about WATCHES? (Street Interview)</div>
-            <div class="work-channel">Watch RNG &middot; 7k subscribers</div>
+            <div class="work-channel">Watch RNG</div>
           </div>
         </div>
 
         <div class="work-card">
-          <div class="video" data-video="ObJfRMGdDMA">
-            <button class="video-facade" type="button" aria-label="Play video: How I got 28 Kills as Drifter on Deadlock">
-              <img src="https://i.ytimg.com/vi/ObJfRMGdDMA/maxresdefault.jpg"
-                   onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/ObJfRMGdDMA/hqdefault.jpg';"
-                   alt="Thumbnail: How I got 28 Kills as Drifter on Deadlock" loading="lazy" width="1280" height="720">
+          <div class="video" data-video="n1_pLoGGg4k">
+            <button class="video-facade" type="button" aria-label="Play video: Ragebating xQc for 2 hours straight with the power of PMA">
+              <img src="https://i.ytimg.com/vi/n1_pLoGGg4k/maxresdefault.jpg"
+                   onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/n1_pLoGGg4k/hqdefault.jpg';"
+                   alt="Thumbnail: Ragebating xQc for 2 hours straight with the power of PMA" loading="lazy" width="1280" height="720">
               <span class="facade-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>
             </button>
           </div>
           <div class="work-info">
-            <div class="work-title">How I got 28 Kills as Drifter on Deadlock</div>
-            <div class="work-channel">KevoActive &middot; 69 subscribers</div>
+            <div class="work-title">Ragebating xQc for 2 hours straight with the power of PMA</div>
+            <div class="work-channel">KevoActive</div>
           </div>
         </div>
 
@@ -1437,8 +1482,10 @@
         </div>
       </div>
 
-      <!-- >>> EDIT TESTIMONIALS: the big quote is "featured-quote", the small one is
-           "mini-quote". Change the words in <blockquote> and the name in <strong>.
+      <!-- >>> EDIT TESTIMONIALS: each quote is one "featured-quote" block. Change the
+           words in <blockquote>, the name in <strong>, and the logo in the <img>.
+           To add a third, copy a whole block (they sit side by side; the column
+           widths are set by "grid-template-columns" on .testi-quotes in the CSS).
            Only use real quotes you have permission to publish. -->
       <div class="testi-quotes">
         <div class="featured-quote reveal">
@@ -1472,6 +1519,7 @@
            copy one whole <a class="roster-card">...</a> block and update the link,
            the logo filename, the name, and the subscriber count. The single letter
            before the <img> is the fallback shown if the logo image is missing. -->
+      <p class="roster-label reveal">Channels I edit for</p>
       <div class="roster stagger" aria-label="Client channels">
         <a class="roster-card" href="https://www.youtube.com/@RaysNintendoTalk" target="_blank" rel="noopener noreferrer">
           <span class="roster-avatar" aria-hidden="true">R<img class="roster-logo" src="assets/logos/rays-nintendo-talk.jpg" alt="" loading="lazy" onerror="this.remove()"></span>
@@ -1644,9 +1692,6 @@
   <script>
     (function () {
       'use strict';
-
-      var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-      if (isTouch) document.body.classList.add('touch-device');
 
       var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
