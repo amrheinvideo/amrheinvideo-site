@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+
+# Private: never commit (the GitHub repo is public)
+CLAUDE.md
+.claude/
