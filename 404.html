@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Never in search results: this page is both the site's "page not found" and every client's private intake form. -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <title>Amrhein Video</title>
+  <link rel="icon" type="image/png" href="/av.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap">
+  <!--
+  ============================================================================
+  404.html: "PAGE NOT FOUND" + THE CLIENT INTAKE FORM
+  ============================================================================
+  GitHub Pages shows this file for any address that has no file of its own.
+  The script at the bottom reads the address:
+    /intake/<client-slug>/<code>  -> the client's intake form, loaded from HQ
+    anything else                 -> a normal "page not found"
+
+  The form talks to Amrhein Video HQ (app.amrheinvideo.com). HQ only answers
+  pages served from amrheinvideo.com, so the form only fully works on the live
+  site. Questions, field names and Jonathan's wording follow
+  Intake_Form_Spec_v6 and Intake_API (kept privately, not in this repo).
+
+  >>> EDIT WORDING: every client-facing sentence is in the TEXT and SECTIONS
+      blocks near the top of the script. Messages marked "spec" are Jonathan's
+      exact wording; keep them word for word.
+  Golden rules apply: no long dashes, no emojis, "YouTube" and "Amrhein Video".
+  ============================================================================
+  -->
+  <style>
+    /* Same tokens as index.html, so the page matches the rest of the site. */
+    :root {
+      color-scheme: dark;
+      --bg: #000000;
+      --surface: #0A0A0A;
+      --card: #111111;
+      --text: #FFFFFF;
+      --text-muted: #A1A1A1;
+      --text-dim: #828282;
+      --accent: #8000FF;
+      --accent-text: #9B4DFF;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --error: #FF9090;
+      --error-bg: rgba(255, 80, 80, 0.08);
+      --error-border: rgba(255, 80, 80, 0.28);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 1rem;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { color: inherit; }
+    button { font-family: var(--font); border: none; background: none; }
+    ::selection { background: var(--accent); color: #fff; }
+    [hidden] { display: none !important; }
+
+    .glow {
+      position: fixed; top: -220px; left: 50%; transform: translateX(-50%);
+      width: 640px; height: 440px; max-width: 100vw; pointer-events: none; z-index: -1;
+      background: radial-gradient(circle, rgba(128, 0, 255, 0.22), transparent 70%);
+    }
+
+    .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+
+    header { padding: 1.5rem 0 0.5rem; }
+    .logo {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+      letter-spacing: -0.01em; text-decoration: none; min-height: 44px;
+    }
+    .logo img { height: 1.5em; width: auto; }
+    .logo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+
+    main { padding: 2rem 0 4rem; }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 5vw + 0.5rem, 2.6rem);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.15;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-text);
+      margin-bottom: 0.9rem;
+    }
+    .eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--accent); }
+    .waiting { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.4rem; }
+    .lead { color: var(--text-muted); font-size: 1.05rem; margin-top: 1.25rem; }
+
+    /* A single message (not ready, all set, invalid, thank you, errors) */
+    .message {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 2rem 1.5rem; text-align: center;
+    }
+    .message p { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; line-height: 1.45; letter-spacing: -0.01em; }
+    .message p.small { font-family: var(--font); font-size: 1rem; font-weight: 400; color: var(--text-muted); margin-top: 0.75rem; letter-spacing: 0; }
+    .message .btn { margin-top: 1.5rem; }
+    .loading { color: var(--text-muted); text-align: center; padding: 3rem 0; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      font-weight: 600; font-size: 0.95rem; padding: 0.7rem 1.4rem; min-height: 44px;
+      border-radius: 9999px; cursor: pointer; text-decoration: none; color: #fff;
+      background: var(--accent); transition: filter 0.2s, box-shadow 0.25s, transform 0.15s;
+    }
+    .btn:hover { filter: brightness(1.18); box-shadow: 0 0 30px rgba(128, 0, 255, 0.5); }
+    .btn:active { transform: scale(0.97); }
+    .btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+    .btn[disabled] { opacity: 0.6; cursor: wait; filter: none; box-shadow: none; }
+
+    /* Form */
+    .section {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 1.25rem;
+    }
+    .section h2 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 1.1rem; }
+    .note {
+      background: var(--surface); border: 1px solid var(--border-strong);
+      border-left: 3px solid var(--accent); border-radius: var(--radius-sm);
+      padding: 0.9rem 1rem; margin-bottom: 1.25rem; font-size: 0.95rem; color: var(--text-muted);
+    }
+    .note a { color: var(--accent-text); font-weight: 600; word-break: break-all; }
+    .note .drive { display: block; margin-bottom: 0.35rem; }
+
+    .q { margin-bottom: 1.4rem; border: 0; min-width: 0; }
+    .q:last-child { margin-bottom: 0; }
+    .q-label, .q legend { display: block; font-weight: 500; font-size: 0.95rem; margin-bottom: 0.5rem; padding: 0; }
+    .opt { font-weight: 400; font-size: 0.8rem; color: var(--text-dim); margin-left: 0.35rem; }
+
+    .q input[type="text"], .q input[type="url"], .q input[type="number"], .q input[type="date"], .q textarea {
+      width: 100%; background: var(--surface); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); padding: 0.75rem 1rem; color: var(--text);
+      font-family: var(--font); font-size: 1rem; min-height: 48px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .q input[type="date"] { max-width: 260px; }
+    .q input[type="number"] { max-width: 180px; }
+    .q textarea { height: 120px; resize: vertical; min-height: 90px; line-height: 1.5; }
+    .q input:focus, .q textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(128, 0, 255, 0.2); }
+    .q input::placeholder, .q textarea::placeholder { color: var(--text-dim); }
+
+    /* Choices (yes/no, single choice, pick all that apply, tick boxes) */
+    .choices { display: flex; flex-direction: column; gap: 0.5rem; }
+    .choices.row { flex-direction: row; flex-wrap: wrap; }
+    .choices.row .choice { flex: 1 1 120px; }
+    .choice {
+      display: flex; align-items: center; gap: 0.75rem; cursor: pointer;
+      background: var(--surface); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); padding: 0.7rem 1rem; min-height: 48px;
+      font-size: 0.95rem; transition: border-color 0.2s, background 0.2s;
+    }
+    .choice:hover { border-color: rgba(128, 0, 255, 0.6); }
+    .choice:has(input:checked) { border-color: var(--accent); background: rgba(128, 0, 255, 0.1); }
+    .choice:has(input:focus-visible) { box-shadow: 0 0 0 3px rgba(128, 0, 255, 0.3); }
+    .choice input { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--accent); margin: 0; }
+    .choice.tick { align-items: flex-start; }
+    .choice.tick input { margin-top: 0.15rem; }
+
+    .q.has-error input, .q.has-error textarea, .q.has-error .choice { border-color: var(--error-border); }
+    .err { display: block; color: var(--error); font-size: 0.88rem; margin-top: 0.45rem; }
+    .err:empty { display: none; }
+
+    .hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+    .submit-area { margin-top: 1.5rem; }
+    .submit-area .btn { width: 100%; font-size: 1rem; padding: 0.95rem; border-radius: var(--radius-sm); }
+    .alert {
+      background: var(--error-bg); border: 1px solid var(--error-border); color: var(--error);
+      border-radius: var(--radius-sm); padding: 0.9rem 1rem; margin-bottom: 1rem; font-size: 0.95rem;
+    }
+    .alert a { color: inherit; font-weight: 600; }
+    .privacy { color: var(--text-dim); font-size: 0.85rem; text-align: center; margin-top: 1.25rem; }
+
+    @media (min-width: 640px) {
+      .section { padding: 2rem; }
+      .message { padding: 2.75rem 2rem; }
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color-scheme: light;
+        --bg: #FFFFFF;
+        --surface: #F4F4F7;
+        --card: #FFFFFF;
+        --text: #0A0A0A;
+        --text-muted: #56565E;
+        --text-dim: #6B6B75;
+        --accent-text: #8000FF;
+        --border: rgba(0, 0, 0, 0.10);
+        --border-strong: rgba(0, 0, 0, 0.16);
+        --error: #B42318;
+        --error-bg: rgba(180, 35, 24, 0.06);
+        --error-border: rgba(180, 35, 24, 0.35);
+      }
+      .glow { background: radial-gradient(circle, rgba(128, 0, 255, 0.12), transparent 70%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <header>
+      <a href="/" class="logo"><img src="/av.png" alt="">Amrhein Video</a>
+    </header>
+    <main id="app" aria-live="polite">
+      <noscript>
+        <div class="message"><p>Please turn on JavaScript to use this page.</p></div>
+      </noscript>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* HQ's public intake endpoint. CHANGE HERE only if HQ moves. */
+      var API_BASE = 'https://app.amrheinvideo.com/api/intake/';
+      var EMAIL = 'jonathan@amrheinvideo.com';
+
+      /* ---- Wording. "spec" = Jonathan's exact words; keep them word for word. ---- */
+      var TEXT = {
+        notReady: "Nothing to fill out yet. I'll let you know when it's ready.",          // spec
+        allSet: "You're all set. I'll be in touch!",                                     // spec
+        invalid: "This link isn't valid.",                                               // spec
+        introFirst: function (name) {                                                    // spec
+          return 'Hey ' + name + "! Let's get this video started. Below is a questionnaire for you to fill out. It'll only take about 5 minutes, so not too long. Your answers tell me what I need before I open the project. Once you submit, I'll confirm the turnaround time with you within 1 business day.";
+        },
+        introLater: function (name) {                                                    // spec
+          return 'Hey ' + name + "! New video, let's get it going. This one's quick, about a minute. Once you submit, I'll send you the turnaround dates within 1 business day.";
+        },
+        thanksFirst: function (date) {                                                   // spec
+          return "Epic, thank you so much. I'll review your answers, and will send you a message with the turnaround dates by " + date + ". If anything is missing from the Google Drive, I'll make sure to let you know!";
+        },
+        thanksLater: function (date) {                                                   // spec
+          return "Awesome, thank you! I'll send you the turnaround dates by " + date + ". If anything is missing from the Google Drive, I'll make sure to let you know!";
+        },
+        driveLine: "Everything goes in this folder, please don't send files any other way.", // spec
+        revisionsInfo: "Each video includes 3 revision rounds. Send each round of notes as one message or one document, with timestamps, within 5 business days of receiving a version. Feedback on early checkpoints doesn't count as a round.", // spec
+        privacy: 'Your answers are only used to plan your video and are stored securely.',
+        rateLimited: 'Too many tries. Please wait a few minutes and try again.',          // Intake_API
+        errorBefore: 'Something went wrong. Please try again in a minute, or email me at ',
+        tryAgain: 'Try again',
+        moreWaiting: function (n) { return n + ' more video' + (n === 1 ? '' : 's') + ' after this one'; },
+        nextVideo: 'Next video',
+        driveLink: 'Open your Google Drive folder',
+        optional: 'Optional',
+        submit: 'Submit',
+        sending: 'Sending...',
+        checkAnswers: 'Please check the answers marked below.',
+        loading: 'Loading...',
+        leaveWarning: 'Your answers have not been sent yet.',
+        notFoundTitle: 'Page not found',
+        notFoundBody: "The page you are looking for doesn't exist.",
+        notFoundLink: 'Back to the homepage',
+        /* The same messages HQ uses, so the page and HQ always agree. */
+        errRequired: 'Please answer this question.',
+        errTick: 'Please tick this box to continue.',
+        errDate: 'Please pick a date.',
+        errNumber: 'Please enter a number of minutes.',
+        errUrl: 'Please paste a full link, starting with https://',
+        errTooLong: function (max) { return 'Please keep this under ' + max + ' characters.'; }
+      };
+
+      /* ---- The questions (Intake_Form_Spec_v6). Field keys are what HQ stores. ---- */
+      var MAX = { short: 200, long: 4000, url: 500 };
+      var YES_NO = [['yes', 'Yes'], ['no', 'No']];
+      var SECTIONS = [
+        { title: 'This video', firstOnly: false, fields: [
+          { key: 'video_topic', q: 'What is the working title or topic?', type: 'short', required: true },
+          { key: 'publish_date', q: 'When do you plan to publish it?', type: 'date', required: true },
+          { key: 'publish_date_fixed', q: 'This date is fixed (a launch, sponsor or event).', type: 'checkbox' },
+          { key: 'assets_due_date', q: 'By what date will everything be in the Drive folder?', type: 'date', required: true },
+          { key: 'raw_footage_min', q: 'Roughly how many minutes of raw footage is there?', type: 'number' },
+          { key: 'has_sponsor_or_affiliate', q: 'Sponsor, affiliate links or promo codes in this one?', type: 'radio', options: YES_NO, required: true, row: true },
+          { key: 'sponsor_affiliate_details', q: 'Details: sponsor name, link to their brief, codes, any disclosure needed, and whether the sponsor approves before you publish.', type: 'long', onlyIf: 'has_sponsor_or_affiliate' },
+          { key: 'has_confidential_content', q: 'Unreleased products, embargoed information, or NDA content?', type: 'radio', options: YES_NO, required: true, row: true },
+          { key: 'confidential_notes', q: 'Anything I should know about that content?', type: 'long', onlyIf: 'has_confidential_content' }
+        ] },
+        { title: 'Files and setup', firstOnly: true, drive: true, fields: [
+          { key: 'footage_types', q: 'What will you usually send me? (pick all that apply)', type: 'multi', required: true, options: [
+            ['talking_head', 'Talking head'], ['screen_recordings', 'Screen recordings'], ['slides', 'Slides'],
+            ['voiceover_audio_only', 'Voiceover (audio only)'], ['other_footage', 'Other footage'], ['other', 'Other']
+          ] },
+          { key: 'script_status', q: 'How ready is the script for this video?', type: 'radio', required: true, options: [
+            ['written_script', 'Written script'], ['outline_only', 'Outline only'], ['unscripted', 'Unscripted'], ['not_started', 'Not started']
+          ] },
+          { key: 'tools_featured', q: 'Which tools or products usually appear on screen? (so I name them correctly)', type: 'short' },
+          { key: 'primary_cta', q: 'What should viewers usually do at the end? (subscribe, join, click a link)', type: 'short' },
+          { key: 'files_and_rights_confirmed', q: "I'll put all files in this Drive folder, and everything I send is mine to use or licensed for my use.", type: 'checkbox', required: true }
+        ] },
+        { title: 'Style', firstOnly: true, fields: [
+          { key: 'music_source', q: 'Where should the music come from?', type: 'radio', required: true, options: [
+            ['editor_picks_royalty_free', 'You pick royalty-free music'], ['client_supplies_licensed', "I'll supply licensed music"], ['no_music', 'No music']
+          ] },
+          { key: 'animations_opt_out', q: "Custom animations are included. Check this if you'd rather not have any.", type: 'checkbox' },
+          { key: 'sound_effects_opt_out', q: "Sound effects are included. Check this if you'd rather not have any.", type: 'checkbox' },
+          { key: 'style_dislikes', q: 'Anything you never want to see in an edit?', type: 'long' },
+          { key: 'brand_assets_link', q: 'Link to your logos, fonts or colors, if you have them.', type: 'url' }
+        ] },
+        { title: 'Sign-off', firstOnly: true, info: TEXT.revisionsInfo, fields: [
+          { key: 'approver_name', q: 'Who signs off on the final cut?', type: 'short', required: true }
+        ] },
+        { title: 'Last one', firstOnly: false, fields: [
+          { key: 'anything_else', q: 'Anything different about this video, or anything else I should know?', type: 'long' }
+        ] }
+      ];
+
+      var app = document.getElementById('app');
+      var match = /^\/intake\/([^\/]+)\/([^\/]+)\/?$/.exec(window.location.pathname);
+      var dirty = false;
+
+      window.addEventListener('beforeunload', function (e) {
+        if (dirty) { e.preventDefault(); e.returnValue = TEXT.leaveWarning; return TEXT.leaveWarning; }
+      });
+
+      /* ---- Small DOM helpers. Text from HQ is only ever set as text, never as HTML. ---- */
+      function el(tag, attrs, children) {
+        var node = document.createElement(tag);
+        if (attrs) {
+          for (var k in attrs) {
+            if (!Object.prototype.hasOwnProperty.call(attrs, k) || attrs[k] === null || attrs[k] === undefined || attrs[k] === false) continue;
+            if (k === 'text') node.textContent = attrs[k];
+            else if (k === 'class') node.className = attrs[k];
+            else node.setAttribute(k, attrs[k] === true ? '' : attrs[k]);
+          }
+        }
+        (children || []).forEach(function (c) { if (c) node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+        return node;
+      }
+      function show(nodes) {
+        app.textContent = '';
+        nodes.forEach(function (n) { if (n) app.appendChild(n); });
+        window.scrollTo(0, 0);
+      }
+      function messageCard(lines, extra) {
+        return el('div', { class: 'message', role: 'status' }, lines.map(function (line, i) {
+          return el('p', { class: i === 0 ? null : 'small', text: line });
+        }).concat(extra || []));
+      }
+      function errorNodes(after) {
+        return [TEXT.errorBefore, el('a', { href: 'mailto:' + EMAIL, text: EMAIL }), '.'].concat(after || []);
+      }
+      function errorCard(retry) {
+        var p = el('p', null, errorNodes());
+        var card = el('div', { class: 'message', role: 'alert' }, [p]);
+        if (retry) card.appendChild(el('button', { class: 'btn', type: 'button', text: TEXT.tryAgain }));
+        if (retry) card.lastChild.addEventListener('click', retry);
+        return card;
+      }
+
+      /* ---- Not an intake address: a normal "page not found". ---- */
+      if (!match) {
+        document.title = TEXT.notFoundTitle + ' | Amrhein Video';
+        show([
+          el('h1', { text: TEXT.notFoundTitle }),
+          el('p', { class: 'lead', text: TEXT.notFoundBody }),
+          el('p', { style: 'margin-top:1.75rem' }, [el('a', { class: 'btn', href: '/', text: TEXT.notFoundLink })])
+        ]);
+        return;
+      }
+
+      document.title = 'Video intake | Amrhein Video';
+      var slug = match[1];
+      var code = match[2];
+      /* Slug and code go to HQ unchanged; anything with unexpected characters cannot be a real link. */
+      var plausible = /^[A-Za-z0-9_-]{1,80}$/;
+      var endpoint = API_BASE + slug + '/' + code;
+
+      function showInvalid() { dirty = false; show([messageCard([TEXT.invalid])]); }
+      function showRateLimited(retry) {
+        show([el('div', { class: 'message', role: 'alert' }, [
+          el('p', { text: TEXT.rateLimited }),
+          el('button', { class: 'btn', type: 'button', text: TEXT.tryAgain })
+        ])]);
+        app.querySelector('button').addEventListener('click', retry);
+      }
+
+      function load() {
+        dirty = false;
+        if (!plausible.test(slug) || !plausible.test(code)) { showInvalid(); return; }
+        show([el('p', { class: 'loading', text: TEXT.loading })]);
+        fetch(endpoint, { method: 'GET', cache: 'no-store', credentials: 'omit' })
+          .then(function (res) {
+            if (res.status === 429) { showRateLimited(load); return null; }
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+          })
+          .then(function (data) { if (data) render(data); })
+          .catch(function () { show([errorCard(load)]); });
+      }
+
+      function render(data) {
+        switch (data && data.state) {
+          case 'form': renderForm(data); break;
+          case 'not_ready': show([messageCard([TEXT.notReady])]); break;
+          case 'all_set': show([messageCard([TEXT.allSet])]); break;
+          case 'invalid': showInvalid(); break;
+          default: show([errorCard(load)]);
+        }
+      }
+
+      /* ---- The form ---- */
+      function safeHttpUrl(value) {
+        try {
+          var u = new URL(String(value));
+          return (u.protocol === 'https:' || u.protocol === 'http:') ? u.href : null;
+        } catch (e) { return null; }
+      }
+
+      function renderForm(data) {
+        var first = data.is_first_project === true;
+        var name = (data.first_name && String(data.first_name).trim()) || 'there';
+        var label = String(data.project_label || '');
+        var more = Number(data.more_waiting) || 0;
+
+        var form = el('form', { novalidate: true });
+        form.appendChild(el('div', { class: 'hp', 'aria-hidden': 'true' }, [
+          el('label', null, ['Company website', el('input', { type: 'text', name: 'company_website', tabindex: '-1', autocomplete: 'off', value: '' })])
+        ]));
+
+        SECTIONS.forEach(function (section) {
+          if (section.firstOnly && !first) return;
+          var box = el('section', { class: 'section' }, [el('h2', { text: section.title })]);
+          if (section.drive) {
+            var href = safeHttpUrl(data.drive_folder_url);
+            box.appendChild(el('div', { class: 'note' }, [
+              href ? el('a', { class: 'drive', href: href, target: '_blank', rel: 'noopener noreferrer', text: TEXT.driveLink }) : null,
+              el('span', { text: TEXT.driveLine })
+            ]));
+          }
+          if (section.info) box.appendChild(el('div', { class: 'note', text: section.info }));
+          section.fields.forEach(function (f) { box.appendChild(renderField(f)); });
+          form.appendChild(box);
+        });
+
+        var alertBox = el('div', { class: 'alert', role: 'alert', hidden: true });
+        var button = el('button', { class: 'btn', type: 'submit', text: TEXT.submit });
+        form.appendChild(el('div', { class: 'submit-area' }, [alertBox, button]));
+        form.appendChild(el('p', { class: 'privacy', text: TEXT.privacy }));
+
+        /* Follow-up questions 6a and 7a appear only on "Yes". */
+        function syncFollowUps() {
+          form.querySelectorAll('[data-only-if]').forEach(function (q) {
+            var picked = form.querySelector('input[name="' + q.getAttribute('data-only-if') + '"]:checked');
+            q.hidden = !(picked && picked.value === 'yes');
+          });
+        }
+        form.addEventListener('change', function (e) {
+          dirty = true;
+          syncFollowUps();
+          var q = e.target.closest('.q');
+          if (q) setError(q, '');
+        });
+        form.addEventListener('input', function () { dirty = true; });
+        syncFollowUps();
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          alertBox.hidden = true;
+          var errors = validate(form);
+          if (showErrors(form, errors, alertBox)) return;
+          send(form, label, first, button, alertBox, more);
+        });
+
+        show([
+          el('div', { class: 'eyebrow', text: 'Video intake' }),
+          el('h1', { text: label }),
+          more > 0 ? el('p', { class: 'waiting', text: TEXT.moreWaiting(more) }) : null,
+          el('p', { class: 'lead', text: first ? TEXT.introFirst(name) : TEXT.introLater(name) }),
+          form
+        ]);
+      }
+
+      function renderField(f) {
+        var id = 'f-' + f.key;
+        var errId = id + '-err';
+        var tag = f.required || f.type === 'checkbox' ? null : el('span', { class: 'opt', text: TEXT.optional });
+        var err = el('span', { class: 'err', id: errId });
+        var attrs = { 'data-key': f.key, 'data-type': f.type, 'data-only-if': f.onlyIf || null };
+        var q;
+
+        if (f.type === 'radio' || f.type === 'multi') {
+          q = el('fieldset', Object.assign({ class: 'q', 'aria-describedby': errId }, attrs), [el('legend', null, [f.q, tag])]);
+          var list = el('div', { class: 'choices' + (f.row ? ' row' : '') });
+          f.options.forEach(function (o) {
+            list.appendChild(el('label', { class: 'choice' }, [
+              el('input', { type: f.type === 'radio' ? 'radio' : 'checkbox', name: f.key, value: o[0], 'aria-required': f.required && f.type === 'radio' ? 'true' : null }),
+              el('span', { text: o[1] })
+            ]));
+          });
+          q.appendChild(list);
+        } else if (f.type === 'checkbox') {
+          q = el('div', Object.assign({ class: 'q' }, attrs), [
+            el('label', { class: 'choice tick' }, [
+              el('input', { type: 'checkbox', id: id, name: f.key, 'aria-describedby': errId }),
+              el('span', { text: f.q })
+            ])
+          ]);
+        } else {
+          var input;
+          if (f.type === 'long') input = el('textarea', { id: id, name: f.key, maxlength: MAX.long, 'aria-describedby': errId });
+          else if (f.type === 'date') input = el('input', { type: 'date', id: id, name: f.key, 'aria-describedby': errId });
+          else if (f.type === 'number') input = el('input', { type: 'number', id: id, name: f.key, min: '0', max: '100000', step: 'any', inputmode: 'decimal', 'aria-describedby': errId });
+          else if (f.type === 'url') input = el('input', { type: 'url', id: id, name: f.key, maxlength: MAX.url, placeholder: 'https://', inputmode: 'url', autocomplete: 'url', 'aria-describedby': errId });
+          else input = el('input', { type: 'text', id: id, name: f.key, maxlength: MAX.short, 'aria-describedby': errId });
+          q = el('div', Object.assign({ class: 'q' }, attrs), [el('label', { class: 'q-label', for: id }, [f.q, tag]), input]);
+        }
+        q.appendChild(err);
+        return q;
+      }
+
+      function fieldDef(key) {
+        for (var i = 0; i < SECTIONS.length; i++) {
+          for (var j = 0; j < SECTIONS[i].fields.length; j++) if (SECTIONS[i].fields[j].key === key) return SECTIONS[i].fields[j];
+        }
+        return null;
+      }
+
+      /* The visible questions and their raw values. */
+      function visibleQuestions(form) {
+        return Array.prototype.filter.call(form.querySelectorAll('.q[data-key]'), function (q) { return !q.hidden; });
+      }
+      function readValue(form, q) {
+        var key = q.getAttribute('data-key');
+        var type = q.getAttribute('data-type');
+        if (type === 'checkbox') return form.querySelector('input[name="' + key + '"]').checked;
+        if (type === 'radio') { var r = form.querySelector('input[name="' + key + '"]:checked'); return r ? r.value : ''; }
+        if (type === 'multi') return Array.prototype.map.call(form.querySelectorAll('input[name="' + key + '"]:checked'), function (c) { return c.value; });
+        return form.querySelector('[name="' + key + '"]').value;
+      }
+      function realDate(v) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+        var d = new Date(v + 'T00:00:00Z');
+        return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v;
+      }
+
+      /* The same rules HQ applies, so problems show before sending. HQ checks again. */
+      function validate(form) {
+        var errors = {};
+        visibleQuestions(form).forEach(function (q) {
+          var f = fieldDef(q.getAttribute('data-key'));
+          var v = readValue(form, q);
+          if (f.type === 'checkbox') { if (f.required && !v) errors[f.key] = TEXT.errTick; return; }
+          if (f.type === 'number') {
+            var box = form.querySelector('[name="' + f.key + '"]');
+            if (box.validity && box.validity.badInput) { errors[f.key] = TEXT.errNumber; return; }
+          }
+          var blank = Array.isArray(v) ? v.length === 0 : String(v).trim() === '';
+          if (blank) { if (f.required) errors[f.key] = TEXT.errRequired; return; }
+          var t = String(v).trim();
+          if ((f.type === 'short' || f.type === 'long') && t.length > MAX[f.type]) errors[f.key] = TEXT.errTooLong(MAX[f.type]);
+          if (f.type === 'date' && !realDate(t)) errors[f.key] = TEXT.errDate;
+          if (f.type === 'number') { var n = Number(t); if (!isFinite(n) || n < 0 || n > 100000) errors[f.key] = TEXT.errNumber; }
+          if (f.type === 'url') {
+            var good = false;
+            try { var u = new URL(t); good = (u.protocol === 'https:' || u.protocol === 'http:') && t.length <= MAX.url; } catch (e) { good = false; }
+            if (!good) errors[f.key] = TEXT.errUrl;
+          }
+        });
+        return errors;
+      }
+
+      function setError(q, message) {
+        q.querySelector('.err').textContent = message;
+        q.classList.toggle('has-error', Boolean(message));
+        q.querySelectorAll('input, textarea').forEach(function (i) {
+          if (message) i.setAttribute('aria-invalid', 'true'); else i.removeAttribute('aria-invalid');
+        });
+      }
+
+      /* Shows each message next to its question. Returns true when there were any. */
+      function showErrors(form, errors, alertBox) {
+        var firstBad = null;
+        var leftover = [];
+        form.querySelectorAll('.q[data-key]').forEach(function (q) { setError(q, ''); });
+        Object.keys(errors).forEach(function (key) {
+          var q = form.querySelector('.q[data-key="' + key + '"]');
+          if (q && !q.hidden) { setError(q, errors[key]); if (!firstBad) firstBad = q; }
+          else { var def = fieldDef(key); leftover.push(def ? def.q + ' ' + errors[key] : errors[key]); }
+        });
+        if (!firstBad && leftover.length === 0) return false;
+        alertBox.textContent = [TEXT.checkAnswers].concat(leftover).join(' ');
+        alertBox.hidden = false;
+        if (firstBad) {
+          firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          var focusable = firstBad.querySelector('input, textarea');
+          if (focusable) focusable.focus({ preventScroll: true });
+        }
+        return true;
+      }
+
+      /* The answers in the shape Intake_API.md asks for. */
+      function collect(form) {
+        var answers = {};
+        visibleQuestions(form).forEach(function (q) {
+          var f = fieldDef(q.getAttribute('data-key'));
+          var v = readValue(form, q);
+          if (f.type === 'checkbox') { answers[f.key] = v; return; }
+          if (f.type === 'multi') { answers[f.key] = v; return; }
+          if (f.type === 'number') { if (String(v).trim() !== '') answers[f.key] = Number(v); return; }
+          if (f.type === 'radio') { if (v) answers[f.key] = v; return; }
+          answers[f.key] = String(v).trim();
+        });
+        return answers;
+      }
+
+      function friendlyDate(iso) {
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''));
+        if (!m) return String(iso || '');
+        var d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+        /* Non-breaking spaces keep the date on one line. */
+        return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).replace(/ /g, '\u00A0');
+      }
+
+      function send(form, label, first, button, alertBox, more) {
+        var body = {
+          project_label: label,
+          company_website: form.querySelector('input[name="company_website"]').value,
+          answers: collect(form)
+        };
+        button.disabled = true;
+        button.textContent = TEXT.sending;
+
+        function fail(nodes) {
+          button.disabled = false;
+          button.textContent = TEXT.submit;
+          alertBox.textContent = '';
+          nodes.forEach(function (n) { alertBox.appendChild(typeof n === 'string' ? document.createTextNode(n) : n); });
+          alertBox.hidden = false;
+          alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        fetch(endpoint, {
+          method: 'POST',
+          cache: 'no-store',
+          credentials: 'omit',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        })
+          .then(function (res) {
+            return res.json().catch(function () { return {}; }).then(function (data) { return { status: res.status, data: data || {} }; });
+          })
+          .then(function (r) {
+            var reason = r.data.reason;
+            if (r.status === 200 && r.data.ok) {
+              dirty = false;
+              var date = friendlyDate(r.data.thank_you_date);
+              var extra = more > 0 ? [el('button', { class: 'btn', type: 'button', text: TEXT.nextVideo })] : [];
+              var thanks = messageCard([first ? TEXT.thanksFirst(date) : TEXT.thanksLater(date)], extra);
+              thanks.setAttribute('tabindex', '-1');
+              show([thanks]);
+              thanks.focus({ preventScroll: true });
+              if (extra.length) extra[0].addEventListener('click', load);
+              return;
+            }
+            if (r.status === 422 && reason === 'answers') {
+              button.disabled = false;
+              button.textContent = TEXT.submit;
+              if (!showErrors(form, r.data.errors || {}, alertBox)) fail(errorNodes());
+              return;
+            }
+            if (r.status === 409) { dirty = false; load(); return; }
+            if (r.status === 400) { showInvalid(); return; }
+            if (r.status === 429) { fail([TEXT.rateLimited]); return; }
+            fail(errorNodes());
+          })
+          .catch(function () { fail(errorNodes()); });
+      }
+
+      load();
+    })();
+  </script>
+</body>
+</html>
