@@ -283,7 +283,7 @@
         errTooLong: function (max) { return 'Please keep this under ' + max + ' characters.'; }
       };
 
-      /* ---- The questions (Intake_Form_Spec_v6). Field keys are what HQ stores. ---- */
+      /* ---- The questions (Intake_Form_Spec_v7). Field keys are what HQ stores. ---- */
       var MAX = { short: 200, long: 4000, url: 500 };
       var YES_NO = [['yes', 'Yes'], ['no', 'No']];
       var SECTIONS = [
@@ -303,6 +303,7 @@
             ['talking_head', 'Talking head'], ['screen_recordings', 'Screen recordings'], ['slides', 'Slides'],
             ['voiceover_audio_only', 'Voiceover (audio only)'], ['other_footage', 'Other footage'], ['other', 'Other']
           ] },
+          { key: 'footage_types_other', q: 'What else will you send?', type: 'short', onlyIf: 'footage_types', onlyIfAny: ['other_footage', 'other'] },
           { key: 'script_status', q: 'How ready is the script for this video?', type: 'radio', required: true, options: [
             ['written_script', 'Written script'], ['outline_only', 'Outline only'], ['unscripted', 'Unscripted'], ['not_started', 'Not started']
           ] },
@@ -460,11 +461,12 @@
         form.appendChild(el('div', { class: 'submit-area' }, [alertBox, button]));
         form.appendChild(el('p', { class: 'privacy', text: TEXT.privacy }));
 
-        /* Follow-up questions 6a and 7a appear only on "Yes". */
+        /* Follow-up questions appear only when their trigger is picked: 6a and 7a on "Yes", 8a on "Other footage" or "Other". */
         function syncFollowUps() {
           form.querySelectorAll('[data-only-if]').forEach(function (q) {
-            var picked = form.querySelector('input[name="' + q.getAttribute('data-only-if') + '"]:checked');
-            q.hidden = !(picked && picked.value === 'yes');
+            var wanted = q.getAttribute('data-only-if-any').split(' ');
+            var picked = form.querySelectorAll('input[name="' + q.getAttribute('data-only-if') + '"]:checked');
+            q.hidden = !Array.prototype.some.call(picked, function (i) { return wanted.indexOf(i.value) !== -1; });
           });
         }
         form.addEventListener('change', function (e) {
@@ -498,7 +500,7 @@
         var errId = id + '-err';
         var tag = f.required || f.type === 'checkbox' ? null : el('span', { class: 'opt', text: TEXT.optional });
         var err = el('span', { class: 'err', id: errId });
-        var attrs = { 'data-key': f.key, 'data-type': f.type, 'data-only-if': f.onlyIf || null };
+        var attrs = { 'data-key': f.key, 'data-type': f.type, 'data-only-if': f.onlyIf || null, 'data-only-if-any': f.onlyIf ? (f.onlyIfAny || ['yes']).join(' ') : null };
         var q;
 
         if (f.type === 'radio' || f.type === 'multi') {
