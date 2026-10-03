@@ -113,6 +113,7 @@
     .message p { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; line-height: 1.45; letter-spacing: -0.01em; }
     .message p.small { font-family: var(--font); font-size: 1rem; font-weight: 400; color: var(--text-muted); margin-top: 0.75rem; letter-spacing: 0; }
     .message .btn { margin-top: 1.5rem; }
+    .message p.small a { color: var(--accent-text); font-weight: 600; word-break: break-word; }
     .loading { color: var(--text-muted); text-align: center; padding: 3rem 0; }
 
     .btn {
@@ -244,6 +245,7 @@
         notReady: "Nothing to fill out yet. I'll let you know when it's ready.",          // spec
         allSet: "You're all set. I'll be in touch!",                                     // spec
         invalid: "This link isn't valid.",                                               // spec
+        invalidHelp: 'Please check the link, or email me at ',
         introFirst: function (name) {                                                    // spec
           return 'Hey ' + name + "! Let's get this video started. Below is a questionnaire for you to fill out. It'll only take about 5 minutes, so not too long. Your answers tell me what I need before I open the project. Once you submit, I'll confirm the turnaround time with you within 1 business day.";
         },
@@ -371,6 +373,18 @@
         return card;
       }
 
+      /* Wrong or incomplete links get one way forward: the email address. No client details. */
+      function invalidCard() {
+        return messageCard([TEXT.invalid], [el('p', { class: 'small' }, [TEXT.invalidHelp, el('a', { href: 'mailto:' + EMAIL, text: EMAIL }), '.'])]);
+      }
+
+      /* ---- An /intake/ address with a missing or extra part: treat it as a bad link, not a missing page. ---- */
+      if (!match && /^\/intake(\/|$)/.test(window.location.pathname)) {
+        document.title = 'Video intake | Amrhein Video';
+        show([invalidCard()]);
+        return;
+      }
+
       /* ---- Not an intake address: a normal "page not found". ---- */
       if (!match) {
         document.title = TEXT.notFoundTitle + ' | Amrhein Video';
@@ -389,7 +403,7 @@
       var plausible = /^[A-Za-z0-9_-]{1,80}$/;
       var endpoint = API_BASE + slug + '/' + code;
 
-      function showInvalid() { dirty = false; show([messageCard([TEXT.invalid])]); }
+      function showInvalid() { dirty = false; show([invalidCard()]); }
       function showRateLimited(retry) {
         show([el('div', { class: 'message', role: 'alert' }, [
           el('p', { text: TEXT.rateLimited }),
