@@ -1784,6 +1784,8 @@
       if (form && formMsg && submitBtn) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
+          /* The form has novalidate (for custom styling), so check required fields and the email format here. */
+          if (!form.checkValidity()) { form.reportValidity(); return; }
           submitBtn.disabled = true;
           submitBtn.textContent = 'Sending...';
           formMsg.className = 'form-message';
@@ -1800,7 +1802,7 @@
             })
             .catch(function () {
               formMsg.className = 'form-message error';
-              formMsg.textContent = 'Something went wrong. Please try again shortly, or email directly.';
+              formMsg.textContent = 'Something went wrong. Please try again shortly, or email me at jonathan@amrheinvideo.com.';
             })
             .finally(function () {
               submitBtn.disabled = false;
