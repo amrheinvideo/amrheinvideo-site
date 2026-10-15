@@ -246,6 +246,8 @@
         allSet: "You're all set. I'll be in touch!",                                     // spec
         invalid: "This link isn't valid.",                                               // spec
         invalidHelp: 'Please check the link, or email me at ',
+        /* HQ answers "inactive" while its Onboarding forms setting is off (Contract V5: one contract, no forms). */
+        inactive: 'This link is no longer active. If you have any questions, email ',     // Jonathan, 14 Oct 2026
         introFirst: function (name) {                                                    // spec
           return 'Hey ' + name + "! Let's get this video started. Below is a questionnaire for you to fill out. It'll only take about 5 minutes, so not too long. Your answers tell me what I need before I open the project. Once you submit, I'll confirm the turnaround time with you within 1 business day.";
         },
@@ -377,6 +379,10 @@
       function invalidCard() {
         return messageCard([TEXT.invalid], [el('p', { class: 'small' }, [TEXT.invalidHelp, el('a', { href: 'mailto:' + EMAIL, text: EMAIL }), '.'])]);
       }
+      /* Onboarding forms switched off in HQ: no form, no client details, nothing to submit. */
+      function inactiveCard() {
+        return el('div', { class: 'message', role: 'status' }, [el('p', null, [TEXT.inactive, el('a', { href: 'mailto:' + EMAIL, text: EMAIL }), '.'])]);
+      }
 
       /* ---- An /intake/ address with a missing or extra part: treat it as a bad link, not a missing page. ---- */
       if (!match && /^\/intake(\/|$)/.test(window.location.pathname)) {
@@ -432,6 +438,7 @@
           case 'not_ready': show([messageCard([TEXT.notReady])]); break;
           case 'all_set': show([messageCard([TEXT.allSet])]); break;
           case 'invalid': showInvalid(); break;
+          case 'inactive': dirty = false; show([inactiveCard()]); break;
           default: show([errorCard(load)]);
         }
       }
@@ -698,6 +705,7 @@
               return;
             }
             if (r.status === 409) { dirty = false; load(); return; }
+            if (r.status === 410 || reason === 'inactive') { dirty = false; show([inactiveCard()]); return; }
             if (r.status === 400) { showInvalid(); return; }
             if (r.status === 429) { fail([TEXT.rateLimited]); return; }
             fail(errorNodes());
