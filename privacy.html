@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <title>Privacy policy | Amrhein Video</title>
+  <meta name="description" content="What Amrhein Video collects, why, and what happens to it.">
+  <link rel="canonical" href="https://amrheinvideo.com/privacy">
+  <link rel="icon" type="image/png" href="/av.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap">
+  <!--
+  ============================================================================
+  privacy.html: THE PRIVACY POLICY (amrheinvideo.com/privacy)
+  ============================================================================
+  Google asks for this page because Amrhein Video HQ (app.amrheinvideo.com)
+  signs in to Google Drive to keep invoice Docs. Keep it true: if the site or
+  HQ starts collecting something new, add it here and change the date.
+  Golden rules apply: no long dashes, no emojis, "YouTube" and "Amrhein Video".
+  ============================================================================
+  -->
+  <style>
+    /* Same tokens as index.html and 404.html, so the page matches the rest of the site. */
+    :root {
+      color-scheme: dark;
+      --bg: #000000;
+      --card: #111111;
+      --text: #FFFFFF;
+      --text-muted: #A1A1A1;
+      --text-dim: #828282;
+      --accent: #8000FF;
+      --accent-text: #9B4DFF;
+      --border: rgba(255, 255, 255, 0.08);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --radius-lg: 22px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 1rem;
+      line-height: 1.65;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { color: var(--accent-text); font-weight: 600; word-break: break-word; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    ::selection { background: var(--accent); color: #fff; }
+
+    .glow {
+      position: fixed; top: -220px; left: 50%; transform: translateX(-50%);
+      width: 640px; height: 440px; max-width: 100vw; pointer-events: none; z-index: -1;
+      background: radial-gradient(circle, rgba(128, 0, 255, 0.22), transparent 70%);
+    }
+
+    .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+
+    header { padding: 1.5rem 0 0.5rem; }
+    .logo {
+      display: inline-flex; align-items: center; gap: 0.6rem; color: var(--text);
+      font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+      letter-spacing: -0.01em; text-decoration: none; min-height: 44px;
+    }
+    .logo img { height: 1.5em; width: auto; }
+
+    main { padding: 2rem 0 4rem; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-text);
+      margin-bottom: 0.9rem;
+    }
+    .eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--accent); }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 5vw + 0.5rem, 2.6rem);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.15;
+    }
+    .updated { color: var(--text-dim); font-size: 0.9rem; margin-top: 0.6rem; }
+    .lead { color: var(--text-muted); font-size: 1.05rem; margin-top: 1.25rem; }
+
+    .section {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 1.25rem;
+    }
+    .section h2 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.75rem; }
+    .section p, .section li { color: var(--text-muted); }
+    .section p + p, .section p + ul, .section ul + p { margin-top: 0.75rem; }
+    .section ul { padding-left: 1.2rem; }
+    .section li + li { margin-top: 0.4rem; }
+    .section strong { color: var(--text); font-weight: 600; }
+
+    footer { color: var(--text-dim); font-size: 0.85rem; padding: 0 0 2.5rem; }
+
+    @media (min-width: 640px) {
+      .section { padding: 2rem; }
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color-scheme: light;
+        --bg: #FFFFFF;
+        --card: #FFFFFF;
+        --text: #0A0A0A;
+        --text-muted: #56565E;
+        --text-dim: #6B6B75;
+        --accent-text: #8000FF;
+        --border: rgba(0, 0, 0, 0.10);
+      }
+      .glow { background: radial-gradient(circle, rgba(128, 0, 255, 0.12), transparent 70%); }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <header>
+      <a href="/" class="logo"><img src="/av.png" alt="">Amrhein Video</a>
+    </header>
+    <main>
+      <div class="eyebrow">Privacy</div>
+      <h1>Privacy policy</h1>
+      <p class="updated">Last updated 17 October 2026</p>
+      <p class="lead">Amrhein Video is a one-person YouTube editing business run by Jonathan Amrhein. This page explains what I collect, why, and what happens to it. The short version: I only keep what I need to edit your videos and run the business, and I never sell or share it.</p>
+
+      <section class="section">
+        <h2>This website</h2>
+        <p>The site has no analytics, no ads and no tracking cookies.</p>
+        <ul>
+          <li><strong>Contact form.</strong> When you send it, your name, email, channel link and message are emailed to me through Web3Forms. I use them only to reply to you.</li>
+          <li><strong>Fonts.</strong> Text styles load from Google Fonts, so Google receives your browser's usual request details, like your IP address.</li>
+          <li><strong>Videos.</strong> YouTube videos only load when you press play. After that, YouTube's own privacy policy applies.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>If you are a client</h2>
+        <p>I keep your name, contact details, channel, project details, signed contract and payment records in Amrhein Video HQ, my private business app. Only I can sign in to it, and it needs two-step sign-in.</p>
+        <p>I use this to plan and deliver your videos, send invoices and keep tax records. Files you share for editing stay in the Google Drive folder we agree on.</p>
+      </section>
+
+      <section class="section">
+        <h2>Amrhein Video HQ and Google</h2>
+        <p>Amrhein Video HQ (app.amrheinvideo.com) is used only by me. It can connect to my own Google Drive to save a Google Doc and a PDF copy of each invoice, for my records.</p>
+        <ul>
+          <li>It asks Google only for access to the folder I choose and the files HQ itself creates. It cannot see anything else in the Drive.</li>
+          <li>The Google sign-in is stored scrambled (encrypted), and I can remove it at any time in HQ or in my Google account settings.</li>
+          <li>Google data is used only to create and update those invoice files. It is never sold, shared, used for ads, or used to train AI.</li>
+        </ul>
+        <p>Amrhein Video HQ's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+      </section>
+
+      <section class="section">
+        <h2>Who else handles it</h2>
+        <p>I never sell your information. A few services store or move it for me: Supabase (HQ's database), Netlify (hosts HQ), Google (Drive and email), Web3Forms (the contact form) and GitHub (hosts this site). Payment apps you choose to pay with handle your payment under their own policies.</p>
+      </section>
+
+      <section class="section">
+        <h2>How long I keep it</h2>
+        <p>Messages from people who never become clients are deleted when they are no longer needed. Client records and invoices are kept as long as tax rules require. You can ask me to see, fix or delete anything I hold about you, and I will reply within 30 days.</p>
+      </section>
+
+      <section class="section">
+        <h2>Questions</h2>
+        <p>Email me at <a href="mailto:jonathan@amrheinvideo.com">jonathan@amrheinvideo.com</a>. If this policy changes, the new version will appear here with a new date.</p>
+      </section>
+    </main>
+    <footer>&copy; 2026 Amrhein Video.</footer>
+  </div>
+</body>
+</html>
